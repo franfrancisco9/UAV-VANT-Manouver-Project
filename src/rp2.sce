@@ -104,8 +104,8 @@ nbb + Ixz/Iz*lbb,np + Ixz/Iz*lp,nr + Ixz/Iz*lr,0,0;
 
 // Matriz B
 B = [0, Ydr;
-    Lda, Ldr;
-    Nda, Ndr;
+    Lda + Ixz/Ix*Nda, Ldr + Ixz/Ix*Ndr;
+    Nda + Ixz/Iz*Lda, Ndr + Ixz/Iz*Ldr;
     0, 0;
     0, 0];
 C = [1, 0, 0, 0, 0;
