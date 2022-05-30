@@ -108,11 +108,11 @@ B = [0, Ydr;
     Nda + Ixz/Iz*Lda, Ndr + Ixz/Iz*Ldr;
     0, 0;
     0, 0];
-C = [1, 0, 0, 0, 0;
-        0, 1, 0, 0, 0;
+C = [0, 0, 0, 0, 0;
+        0, 0, 0, 0, 0;
         0, 0, 1, 0, 0;
-        0, 0, 0, 1, 0;
-        0, 0, 0, 0, 1;
+        0, 0, 0, 0, 0;
+        0, 0, 0, 0, 0;
 ]
 D = zeros(5,2);
 
@@ -124,9 +124,7 @@ tau = 1/-valores_proprios(4);
 
 H = syslin('c', A, B, C, D);
 h = ss2tf(H)
-// clf();
-// evans(h(1,1));
-// sgrid()
+clf();evans(h(3, 2),10);sgrid()
 
 // // Post-tuning graphical elements
 // ch = gca().children;
@@ -136,25 +134,22 @@ h = ss2tf(H)
 // asymptotes.segs_color = color("grey70");
 
 // Completing Evans plot:
-[Ki1,si1] = kpure(h(1,1)) // Gains that give pure imaginary closed loop poles
-// plot([real(s) real(s)],[imag(s) -imag(s)],'*r')
+// [Ki1,si1] = kpure(h(3, 2)) // Gains that give pure imaginary closed loop poles
+// plot([real(si1) real(si1)],[imag(si1) -imag(si1)],'*r')
 
-[Kr1,sr1] = krac2(h(1,1))
-// plot([real(s) real(s)],[imag(s) -imag(s)],'*r')
+// [Kr1,sr1] = krac2(h(3, 2))
+// plot([real(sr1) real(sr1)],[imag(sr1) -imag(sr1)],'*r')
 
-[Ki2,si2] = kpure(h(1,2))
-[Kr2,sr2] = krac2(h(1,2))
+// k retirado do gráfico
+k_sae = [0 0 0.77 0 0];
 
-kv = 6.9146075 
-kphi =  1.4717426
-k1 = [kv 0 0 0 0];
-k2 = [kphi 0 0 0 0];
-k_sae=[k1; k2];
-
-Aaf = A-B*k_sae;
+Aaf = A-B(:,2)*k_sae;
 
 valores_proprios_f = spec(Aaf);
 [wn_f,z_f] = damp(valores_proprios_f);
+disp(valores_proprios, valores_proprios_f)
+disp(wn, wn_f)
+disp(z, z_f)
 //==============PONTO 2: SAE=========================================
 // sl = syslin('c', A, B, C, D)
 // clf()
