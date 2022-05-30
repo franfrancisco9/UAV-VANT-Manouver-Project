@@ -143,14 +143,14 @@ sgrid('red')
 // plot([real(sr1) real(sr1)],[imag(sr1) -imag(sr1)],'*r')
 
 // k retirado do gráfico
-k_sae = [0 0 0.77 0 0];
+k_sae = [0 0 2.85 0 0];
 
 Aaf = A-B(:,2)*k_sae;
 
 valores_proprios_f = spec(Aaf);
 [wn_f,z_f] = damp(valores_proprios_f);
 disp(valores_proprios, valores_proprios_f)
-disp(wn, wn_f)
+// disp(wn, wn_f)
 disp(z, z_f) 
 
 //controlo ótimo
@@ -162,7 +162,7 @@ K=-inv(R)*B'*P;
 evals_reali=spec(A+B*K);
 [wn_c,z_c] = damp(evals_reali);
 disp(valores_proprios, evals_reali)
-disp(wn, wn_c)
+// disp(wn, wn_c)
 disp(z, z_c)
 //==============PONTO 2: SAE=========================================
 // sl = syslin('c', A, B, C, D)
