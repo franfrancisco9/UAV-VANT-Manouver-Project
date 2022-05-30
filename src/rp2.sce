@@ -124,7 +124,9 @@ tau = 1/-valores_proprios(4);
 
 H = syslin('c', A, B, C, D);
 h = ss2tf(H)
-clf();evans(h(3, 2),10);sgrid()
+clf();
+evans(h(3, 2),10)
+sgrid('red')
 
 // // Post-tuning graphical elements
 // ch = gca().children;
