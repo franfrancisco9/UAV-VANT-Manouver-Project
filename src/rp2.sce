@@ -151,7 +151,19 @@ valores_proprios_f = spec(Aaf);
 [wn_f,z_f] = damp(valores_proprios_f);
 disp(valores_proprios, valores_proprios_f)
 disp(wn, wn_f)
-disp(z, z_f)
+disp(z, z_f) 
+
+//controlo ótimo
+Q=diag([15 0 3 0 0]); //Weights on states
+R = diag([0.5 0.5]); //Weight on input
+// Kc=lqr(H,Q_xx,R_uu);
+P=riccati(A,B*inv(R)*B',Q,'c');
+K=-inv(R)*B'*P;
+evals_reali=spec(A+B*K);
+[wn_c,z_c] = damp(evals_reali);
+disp(valores_proprios, evals_reali)
+disp(wn, wn_c)
+disp(z, z_c)
 //==============PONTO 2: SAE=========================================
 // sl = syslin('c', A, B, C, D)
 // clf()
