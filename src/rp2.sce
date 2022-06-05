@@ -96,31 +96,28 @@ Ldr = 0.000;
 Ndr = 10.894;
 
 // Matriz A
-A = [ybb,yp+u0*sin(tt0),yr-u0*cos(tt0),g*cos(tt0), 0;
-lbb + Ixz/Ix*nbb,lp + Ixz/Ix*np,lr + Ixz/Ix*nr,0,0; 
-nbb + Ixz/Iz*lbb,np + Ixz/Iz*lp,nr + Ixz/Iz*lr,0,0;
-0,1,tan(tt0),0,0; 
-0,0,1/cos(tt0),0,0];
+A = [ybb,yp+u0*sin(tt0),yr-u0*cos(tt0),g*cos(tt0);
+lbb + Ixz/Ix*nbb,lp + Ixz/Ix*np,lr + Ixz/Ix*nr,0; 
+nbb + Ixz/Iz*lbb,np + Ixz/Iz*lp,nr + Ixz/Iz*lr,0;
+0,1,tan(tt0),0];
 
 // Matriz B
 B = [0, Ydr;
     Lda + Ixz/Ix*Nda, Ldr + Ixz/Ix*Ndr;
     Nda + Ixz/Iz*Lda, Ndr + Ixz/Iz*Ldr;
-    0, 0;
     0, 0];
-C = [0, 0, 0, 0, 0;
-        0, 0, 0, 0, 0;
-        0, 0, 1, 0, 0;
-        0, 0, 0, 0, 0;
-        0, 0, 0, 0, 0;
+C = [0, 0, 0, 0;
+        0, 0, 0, 0;
+        0, 0, 1, 0;
+        0, 0, 0, 0;
 ]
-D = zeros(5,2);
+D = zeros(4,2);
 
 // Cálculo dos valores para o relatório
 valores_proprios = spec(A);
 [wn,z] = damp(valores_proprios);
-t_2 = log(2)/valores_proprios(5);
-tau = 1/-valores_proprios(4);
+t_2 = log(2)/valores_proprios(4);
+tau = 1/-valores_proprios(3);
 
 H = syslin('c', A, B, C, D);
 h = ss2tf(H)
@@ -143,7 +140,7 @@ sgrid('red')
 // plot([real(sr1) real(sr1)],[imag(sr1) -imag(sr1)],'*r')
 
 // k retirado do gráfico
-k_sae = [0 0 2.85 0 0];
+k_sae = [0 0 2.85 0];
 
 Aaf = A-B(:,2)*k_sae;
 
@@ -154,14 +151,22 @@ disp(valores_proprios, valores_proprios_f)
 disp(z, z_f) 
 
 //controlo ótimo
-Q=diag([15 0 3 0 0]); //Weights on states
-R = diag([0.5 0.5]); //Weight on input
+//Método de Bryson (90% valores máximos)
+Q11 = 10; //1/(0.8*15*deg); 
+Q22 = 1/0.9;
+Q33 = 10; //1/0.9;
+Q44 = 1/(30*0.9*deg);
+R11 = 1/(0.9*30*deg);
+R22= 1/(0.9*30*deg);
+
+Q=diag([Q11 Q22 Q33 Q44]); //Weights on states
+R = diag([R11 R22]); //Weight on input
 // Kc=lqr(H,Q_xx,R_uu);
 P=riccati(A,B*inv(R)*B',Q,'c');
 K=-inv(R)*B'*P;
-evals_reali=spec(A+B*K);
-[wn_c,z_c] = damp(evals_reali);
-disp(valores_proprios, evals_reali)
+valores_proprios_c=spec(A+B*K);
+[wn_c,z_c] = damp(valores_proprios_c);
+disp(valores_proprios, valores_proprios_c)
 // disp(wn, wn_c)
 disp(z, z_c)
 //==============PONTO 2: SAE=========================================
