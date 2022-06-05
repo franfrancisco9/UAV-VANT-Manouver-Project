@@ -121,6 +121,7 @@ tau = 1/-valores_proprios(3);
 
 H = syslin('c', A, B, C, D);
 h = ss2tf(H)
+disp(h(3,2))
 clf();
 evans(h(3, 2),10)
 sgrid('red')
@@ -140,7 +141,7 @@ sgrid('red')
 // plot([real(sr1) real(sr1)],[imag(sr1) -imag(sr1)],'*r')
 
 // k retirado do gráfico
-k_sae = [0 0 2.85 0];
+k_sae = [0 0 2.849 0];
 
 Aaf = A-B(:,2)*k_sae;
 
