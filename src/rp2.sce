@@ -147,18 +147,20 @@ Aaf = A-B(:,2)*k_sae;
 
 valores_proprios_f = spec(Aaf);
 [wn_f,z_f] = damp(valores_proprios_f);
+tauf = 1/-valores_proprios_f(1);
+
 disp(valores_proprios, valores_proprios_f)
 // disp(wn, wn_f)
 disp(z, z_f) 
 
 //controlo ótimo
 //Método de Bryson (90% valores máximos)
-Q11 = 10; //1/(0.8*15*deg); 
-Q22 = 1/0.9;
-Q33 = 10; //1/0.9;
-Q44 = 1/(30*0.9*deg);
-R11 = 1/(0.9*30*deg);
-R22= 1/(0.9*30*deg);
+Q11 = 10;//((0.9*15*deg)^2); 
+Q22 = 1/(0.9^2);
+Q33 = 60;//(0.9^2);
+Q44 = 1/((30*0.9*deg)^2);
+R11 = 1/((30*0.9*deg)^2);
+R22= 1/((30*0.9*deg)^2);
 
 Q=diag([Q11 Q22 Q33 Q44]); //Weights on states
 R = diag([R11 R22]); //Weight on input
