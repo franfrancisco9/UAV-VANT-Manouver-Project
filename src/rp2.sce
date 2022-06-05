@@ -172,6 +172,11 @@ valores_proprios_c=spec(A+B*K);
 disp(valores_proprios, valores_proprios_c)
 // disp(wn, wn_c)
 disp(z, z_c)
+Ac = A-B*K;
+C2 = [1, 0, 0, 0;
+      0, 0, 0, 1;]
+G = -C2*inv(Ac)*B;
+F = inv(G); // ganho estático para seguimento de referência
 //==============PONTO 2: SAE=========================================
 // sl = syslin('c', A, B, C, D)
 // clf()
