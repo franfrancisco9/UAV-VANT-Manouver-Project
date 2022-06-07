@@ -135,7 +135,7 @@ valores_proprios_f = spec(Aaf);
 [wn_f,z_f] = damp(valores_proprios_f);
 tauf = 1/-valores_proprios_f(1);
 
-disp(valores_proprios, valores_proprios_f)
+// disp(valores_proprios, valores_proprios_f)
 // disp(wn, wn_f)
 disp(z, z_f) 
 
@@ -153,71 +153,55 @@ R = diag([R11 R22]); //Weight on input
 // Kc=lqr(H,Q_xx,R_uu);
 P=riccati(A,B*inv(R)*B',Q,'c');
 K=-inv(R)*B'*P;
-valores_proprios_c=spec(A+B*K);
-[wn_c,z_c] = damp(valores_proprios_c);
-disp(valores_proprios, valores_proprios_c)
+valores_proprios=spec(A+B*K);
+[wn,z] = damp(valores_proprios_c);
+disp(valores_proprios)
 // disp(wn, wn_c)
-disp(z, z_c)
-Ac = A-B*K;
-C2 = [1, 0, 0, 0;
+disp(z)
+A = A-B*K;
+C = [1, 0, 0, 0;
       0, 0, 0, 1;]
-G = -C2*inv(Ac)*B;
+G = -C*inv(A)*B;
 F = inv(G); // ganho estático para seguimento de referência
 
-//==============PONTO 2: SAE=========================================
-// sl = syslin('c', A, B, C, D)
-// clf()
-// evans(sl)
-// ans = ss2tf(sl)  
-// roots(denom(ans))
-// spec(A)
-
-// % PERIODO CURTO
-// % Realimentacao de q 
-// [num,den] = ss2tf(A,B,C,D,1);  
-// fun_tranfer = tf(num(3,:),den);
-// % rlocus(-fun_tranfer)
-// % [k,POLES] = rlocfind(-fun_tranfer)
-
-// % Ganho da Realimentacao de u e de q
-// ku = 0.3246;
-// kq = -0.2507;
-// k1 = [0 0 kq 0 0];
-// k2 = [ku 0 0 0 0];
-// k_sae=[k1; k2];
-
-// Aaf = A-B*k_sae;
-// damp(Aaf)
-// Voltar a determinar os níveis de qualidade de voo === [Classe III] e [Categoria A]
 
 //modo espiral
-T2 = log(2) / wn(4,1) // tem que ser maior que 12s
-re = real(pol(4,1))
+re = real(valores_proprios(3,1))
 if re < 0
-    disp("Espiral estável")
-    disp(pol(4,1))
+    disp("NÍVEL 1: Espiral estável")
+    disp(valores_proprios(3,1))
 elseif T2 < 12 then
     disp("T2 Espiral menor que 12");
     disp(T2);
 end
 
 //modo rolamento
-Tp = 1 / wn(3,1) // tem que ser menor 1.4
-if 1.4 < Tp then
-    disp("Tp Rolamento maior que 1.4");
+Tp = 1 / wn(4,1) // tem que ser menor 1
+if 1 < Tp then
+    disp("Tp Rolamento maior que 1");
+    disp(Tp);
+else
+    disp("NÍVEL 1: Tp Rolamento menor que 1");
     disp(Tp);
 end
 
+
 //modo rolamento holandes
-zz_rh = zz(2,1) // maior do que 0.19 (imposto pelo projeto maior que 0.6)
+zz_rh = z(1,1) // maior do que 0.19 (imposto pelo projeto maior que 0.6)
 if zz_rh < 0.6 then
     disp("Amortecimento RH menor que 0.6");
     disp(zz_rh);
+else
+    disp("NÍVEL 1: Amortecimento RH maior que 0.6");
+    disp(zz_rh);
 end
 
-wn_rh = wn(2,1) // maior do que 0.5
-if wn_rh < 0.5 then
-    disp("Frequencia RH menor que 0.5");
+wn_rh = wn(1,1) // maior do que 0.5
+if wn_rh < 1 then
+    disp("Frequencia RH menor que 1");
+    disp(wn_rh);
+else
+    disp("NÍVEL 1: Frequencia RH maior que 1");
     disp(wn_rh);
 end
 
@@ -225,4 +209,8 @@ zz_wn_rh = zz_rh * wn_rh // maior do que 0.35
 if zz_wn_rh < 0.35 then
     disp("Freq*Amort RH menor que 0.35");
     disp(zz_wn_rh);
+else
+    disp("NÍVEL 1: Freq*Amort RH maior que 0.35");
+    disp(zz_wn_rh);
 end
+
