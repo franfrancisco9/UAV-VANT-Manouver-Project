@@ -95,33 +95,56 @@ Ydr = -0.006;
 Ldr = 0.000; 
 Ndr = 10.894;
 
+//==============================================================================
+// =============================== RP1 =========================================
+//============================== Ponto 1 =======================================
+//==============================================================================
+
 // Matriz A
 A = [ybb,yp+sin(tt0),yr-1,g*cos(tt0)/u0;
-lbb + Ixz/Ix*nbb,lp + Ixz/Ix*np,lr + Ixz/Ix*nr,0; 
-nbb + Ixz/Iz*lbb,np + Ixz/Iz*lp,nr + Ixz/Iz*lr,0;
-0,1,tan(tt0),0];
+    lbb + Ixz/Ix*nbb,lp + Ixz/Ix*np,lr + Ixz/Ix*nr,0; 
+    nbb + Ixz/Iz*lbb,np + Ixz/Iz*lp,nr + Ixz/Iz*lr,0;
+    0,1,tan(tt0),0];
 
 // Matriz B
 B = [0, Ydr;
     Lda + Ixz/Ix*Nda, Ldr + Ixz/Ix*Ndr;
     Nda + Ixz/Iz*Lda, Ndr + Ixz/Iz*Ldr;
     0, 0];
+    
+// Matriz C
 C = [0, 0, 0, 0;
-        0, 0, 0, 0;
-        0, 0, 1, 0;
-        0, 0, 0, 0;
-]
+    0, 0, 0, 0;
+    0, 0, 1, 0;
+    0, 0, 0, 0];
+
+// Matriz D
 D = zeros(4,2);
 
-// Cálculo dos valores para o relatório
+
+// Valores Próprios
 valores_proprios = spec(A);
 [wn,z] = damp(valores_proprios);
+
+// Dados para analisar qualidades de voo
 t_2 = log(2)/valores_proprios(4);
 tau = 1/-valores_proprios(3);
 
+//==============================================================================
+//==============================================================================
+
+
+//==============================================================================
+// =============================== RP2 =========================================
+//============================== Ponto 2 =======================================
+//==============================================================================
+
+// Função Tranferência 
 H = syslin('c', A, B, C, D);
 h = ss2tf(H)
 disp(h(3,2))
+
+//Rootlocus
 clf();
 evans(h(3, 2),10)
 sgrid('red')
@@ -139,31 +162,54 @@ tauf = 1/-valores_proprios_f(1);
 // disp(wn, wn_f)
 disp(z, z_f) 
 
+//==============================================================================
+//==============================================================================
+
+
+//==============================================================================
+// =============================== RP2 =========================================
+//============================== Ponto 3 =======================================
+//==============================================================================
+
 //controlo ótimo
 //Método de Bryson (90% valores máximos)
-Q11 = 10;//((0.9*15*deg)^2); 
+
+//Dados da Matriz Q
+Q11 = 10; //((0.9*15*deg)^2); 
 Q22 = 1/(0.9^2);
-Q33 = 60;//(0.9^2);
+Q33 = 60; //(0.9^2);
 Q44 = 1/((30*0.9*deg)^2);
+
+//Dados da Matriz R
 R11 = 1/((30*0.9*deg)^2);
 R22= 1/((30*0.9*deg)^2);
 
-Q=diag([Q11 Q22 Q33 Q44]); //Weights on states
-R = diag([R11 R22]); //Weight on input
+// Matriz Q e R
+Q=diag([Q11 Q22 Q33 Q44]);
+R = diag([R11 R22]);
+
+// Ganho K
 // Kc=lqr(H,Q_xx,R_uu);
 P=riccati(A,B*inv(R)*B',Q,'c');
 K=-inv(R)*B'*P;
+
+// Valores Próprios, w_n e fator de amortecimento
 valores_proprios=spec(A+B*K);
 [wn,z] = damp(valores_proprios_c);
 disp(valores_proprios)
 // disp(wn, wn_c)
 disp(z)
+
 A = A-B*K;
 C = [1, 0, 0, 0;
       0, 0, 0, 1;]
 G = -C*inv(A)*B;
 F = inv(G); // ganho estático para seguimento de referência
 
+//==============================================================================
+//==============================================================================
+
+// Avaliação das qualidades de voo
 
 //modo espiral
 re = real(valores_proprios(3,1))
