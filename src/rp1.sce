@@ -118,12 +118,12 @@ elseif T2 < 12 then
 end
 
 //modo rolamento
-Tp = 1 / wn(2,1) // tem que ser menor 1.4
-if 1.4 < Tp then
-    disp("Tp Rolamento maior que 1.4");
+Tp = 1 / wn(2,1) // tem que ser menor 1
+if 1 < Tp then
+    disp("Tp Rolamento maior que 1");
     disp(Tp);
 else
-    disp("Tp Rolamento menor que 1.4");
+    disp("Tp Rolamento menor que 1");
     disp(Tp);
 end
 
@@ -139,11 +139,11 @@ else
 end
 
 wn_rh = wn(3,1) // maior do que 0.5
-if wn_rh < 0.5 then
-    disp("Frequencia RH menor que 0.5");
+if wn_rh < 1 then
+    disp("Frequencia RH menor que 1");
     disp(wn_rh);
 else
-    disp("Frequencia RH maior que 0.5");
+    disp("Frequencia RH maior que 1");
     disp(wn_rh);
 end
 
