@@ -96,10 +96,11 @@ Ldr = 0.000;
 Ndr = 10.894;
 
 // Matriz A
-A = [ybb,yp+u0*sin(tt0),yr-u0*cos(tt0),g*cos(tt0), 0;
-lbb + Ixz/Ix*nbb,lp + Ixz/Ix*np,lr + Ixz/Ix*nr,0,0; 
-nbb + Ixz/Iz*lbb,np + Ixz/Iz*lp,nr + Ixz/Iz*lr,0,0;
-0,1,tan(tt0),0,0; 
+// Matriz A
+A = [ybb,yp+sin(tt0),yr-cos(tt0),g*cos(tt0)/u0;
+lbb + Ixz/Ix*nbb,lp + Ixz/Ix*np,lr + Ixz/Ix*nr,0; 
+nbb + Ixz/Iz*lbb,np + Ixz/Iz*lp,nr + Ixz/Iz*lr,0;
+0,1,tan(tt0),0;
 0,0,1/cos(tt0),0,0];
 // Cálculo dos valores para o relatório
 valores_proprios = spec(A);

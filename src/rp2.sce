@@ -96,7 +96,7 @@ Ldr = 0.000;
 Ndr = 10.894;
 
 // Matriz A
-A = [ybb,yp+u0*sin(tt0),yr-u0*cos(tt0),g*cos(tt0);
+A = [ybb,yp+sin(tt0),yr-cos(tt0),g*cos(tt0)/u0;
 lbb + Ixz/Ix*nbb,lp + Ixz/Ix*np,lr + Ixz/Ix*nr,0; 
 nbb + Ixz/Iz*lbb,np + Ixz/Iz*lp,nr + Ixz/Iz*lr,0;
 0,1,tan(tt0),0];
@@ -125,20 +125,6 @@ disp(h(3,2))
 clf();
 evans(h(3, 2),10)
 sgrid('red')
-
-// // Post-tuning graphical elements
-// ch = gca().children;
-// curves = ch(2).children;
-// curves.thickness = 2;
-// asymptotes = ch(ch.type=="Segs");
-// asymptotes.segs_color = color("grey70");
-
-// Completing Evans plot:
-// [Ki1,si1] = kpure(h(3, 2)) // Gains that give pure imaginary closed loop poles
-// plot([real(si1) real(si1)],[imag(si1) -imag(si1)],'*r')
-
-// [Kr1,sr1] = krac2(h(3, 2))
-// plot([real(sr1) real(sr1)],[imag(sr1) -imag(sr1)],'*r')
 
 // k retirado do gráfico
 k_sae = [0 0 2.849 0];
@@ -177,6 +163,7 @@ C2 = [1, 0, 0, 0;
       0, 0, 0, 1;]
 G = -C2*inv(Ac)*B;
 F = inv(G); // ganho estático para seguimento de referência
+
 //==============PONTO 2: SAE=========================================
 // sl = syslin('c', A, B, C, D)
 // clf()
@@ -201,3 +188,41 @@ F = inv(G); // ganho estático para seguimento de referência
 
 // Aaf = A-B*k_sae;
 // damp(Aaf)
+// Voltar a determinar os níveis de qualidade de voo === [Classe III] e [Categoria A]
+
+//modo espiral
+T2 = log(2) / wn(4,1) // tem que ser maior que 12s
+re = real(pol(4,1))
+if re < 0
+    disp("Espiral estável")
+    disp(pol(4,1))
+elseif T2 < 12 then
+    disp("T2 Espiral menor que 12");
+    disp(T2);
+end
+
+//modo rolamento
+Tp = 1 / wn(3,1) // tem que ser menor 1.4
+if 1.4 < Tp then
+    disp("Tp Rolamento maior que 1.4");
+    disp(Tp);
+end
+
+//modo rolamento holandes
+zz_rh = zz(2,1) // maior do que 0.19 (imposto pelo projeto maior que 0.6)
+if zz_rh < 0.6 then
+    disp("Amortecimento RH menor que 0.6");
+    disp(zz_rh);
+end
+
+wn_rh = wn(2,1) // maior do que 0.5
+if wn_rh < 0.5 then
+    disp("Frequencia RH menor que 0.5");
+    disp(wn_rh);
+end
+
+zz_wn_rh = zz_rh * wn_rh // maior do que 0.35
+if zz_wn_rh < 0.35 then
+    disp("Freq*Amort RH menor que 0.35");
+    disp(zz_wn_rh);
+end
