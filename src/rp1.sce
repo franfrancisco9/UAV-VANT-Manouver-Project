@@ -97,13 +97,61 @@ Ndr = 10.894;
 
 // Matriz A
 // Matriz A
-A = [ybb,yp+sin(tt0),yr-cos(tt0),g*cos(tt0)/u0;
-lbb + Ixz/Ix*nbb,lp + Ixz/Ix*np,lr + Ixz/Ix*nr,0; 
-nbb + Ixz/Iz*lbb,np + Ixz/Iz*lp,nr + Ixz/Iz*lr,0;
-0,1,tan(tt0),0;
+A = [ybb,yp+sin(tt0),yr-1,g*cos(tt0)/u0, 0;
+lbb + Ixz/Ix*nbb,lp + Ixz/Ix*np,lr + Ixz/Ix*nr,0, 0; 
+nbb + Ixz/Iz*lbb,np + Ixz/Iz*lp,nr + Ixz/Iz*lr,0, 0;
+0,1,tan(tt0),0, 0;
 0,0,1/cos(tt0),0,0];
 // Cálculo dos valores para o relatório
 valores_proprios = spec(A);
 [wn,z] = damp(valores_proprios);
-t_2 = log(2)/valores_proprios(5);
+T2 = log(2)/valores_proprios(5);
 tau = 1/-valores_proprios(4);
+
+re = real(valores_proprios(5,1))
+if re < 0
+    disp("Espiral estável")
+    disp(valores_proprios(5,1))
+elseif T2 < 12 then
+    disp("T2 Espiral menor que 12");
+    disp(T2);
+end
+
+//modo rolamento
+Tp = 1 / wn(2,1) // tem que ser menor 1.4
+if 1.4 < Tp then
+    disp("Tp Rolamento maior que 1.4");
+    disp(Tp);
+else
+    disp("Tp Rolamento menor que 1.4");
+    disp(Tp);
+end
+
+
+//modo rolamento holandes
+zz_rh = z(3,1) // maior do que 0.19 (imposto pelo projeto maior que 0.6)
+if zz_rh < 0.6 then
+    disp("Amortecimento RH menor que 0.6");
+    disp(zz_rh);
+else
+    disp("Amortecimento RH maior que 0.6");
+    disp(zz_rh);
+end
+
+wn_rh = wn(3,1) // maior do que 0.5
+if wn_rh < 0.5 then
+    disp("Frequencia RH menor que 0.5");
+    disp(wn_rh);
+else
+    disp("Frequencia RH maior que 0.5");
+    disp(wn_rh);
+end
+
+zz_wn_rh = zz_rh * wn_rh // maior do que 0.35
+if zz_wn_rh < 0.35 then
+    disp("Freq*Amort RH menor que 0.35");
+    disp(zz_wn_rh);
+else
+    disp("Freq*Amort RH maior que 0.35");
+    disp(zz_wn_rh);
+end
