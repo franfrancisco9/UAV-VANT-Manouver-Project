@@ -18,6 +18,10 @@ Lda Nda Ydr Ldr Ndr
 -36.160 0.000 -0.006 0.000 10.894
 -----------------
 */
+
+clear;
+close all;
+
 // Constantes e conversões
 kn = 0.5144444444444444;
 deg = %pi/180; 
@@ -158,9 +162,9 @@ valores_proprios_f = spec(Aaf);
 [wn_f,z_f] = damp(valores_proprios_f);
 tauf = 1/-valores_proprios_f(1);
 
-// disp(valores_proprios, valores_proprios_f)
+//disp(valores_proprios, valores_proprios_f)
 // disp(wn, wn_f)
-disp(z, z_f) 
+//disp(z, z_f) 
 
 //==============================================================================
 //==============================================================================
@@ -175,9 +179,9 @@ disp(z, z_f)
 //Método de Bryson
 
 //Valores escolhidos para Q
-max_bb = 0.1*15*deg; 
-max_p = 0.1^2;
-max_r = 0.1^2;
+max_bb = 15*0.1*deg; 
+max_p = 0.1;
+max_r = 0.1;
 max_phi = 30*0.1*deg;
 //Valores escolhidos para R
 max_da = 30*0.1*deg;
@@ -198,34 +202,47 @@ R = diag([R11 R22]);
 
 // Ganho K
 K1=lqr(H,Q,R);
+//disp(K1)
 //P=riccati(A,B*inv(R)*B',Q,'c');
 //K1=-inv(R)*B'*P;
 
 // Valores Próprios, w_n e fator de amortecimento
-valores_proprios_c=spec(A+B*K1);
+valores_proprios_c=spec(A-B*K1);
 [wn_c,z_c] = damp(valores_proprios_c);
-disp(valores_proprios_c, z_c)
+disp(valores_proprios, valores_proprios_f, valores_proprios_c, K1)
 // disp(wn, wn_c)
-disp(z_c)
+//disp(z_c)
 
 A1 = A-B*K1;
 C1 = [1, 0, 0, 0;
     0, 0, 0, 1;]
 D1 = zeros(2,2);
 G = -C1*inv(A1)*B;
+//disp(G)
 F = inv(G); // ganho estático para seguimento de referência
 
 //gráfico
 bb_ref = 0;
 phi_ref = max_phi;
 x0 = zeros(4,1);
+
 select_bb_phi = [1, 0, 0, 0;
                 0, 0, 0, 1];
 Ky = [K1(1,1), K1(1,4);
     K1(2,1), K1(2,4)];
 Kc = [0, K1(1,2), K1(1,3), 0;
     0, K1(2,2), K1(2,3), 0];
-xcos("teste.zcos")
+//xcos("teste.zcos")
+
+//H1 = syslin('c', A1, B, C1, D1);
+//h1 = ss2tf(H1)
+//disp(h1)
+//t = 0: 0.01 : 10;
+//y1 = csim('step', t, h1(1,1));
+//figure
+//plot (t, y1)
+
+
 //==============================================================================
 //==============================================================================
 
