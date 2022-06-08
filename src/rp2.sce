@@ -20,6 +20,7 @@ Lda Nda Ydr Ldr Ndr
 */
 
 clear;
+close all;
 
 // Constantes e conversões
 kn = 0.5144444444444444;
