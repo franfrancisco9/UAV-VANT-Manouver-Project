@@ -157,7 +157,10 @@ sgrid('red')
 k_sae = [0 0 2.849 0];
 
 Aaf = A-B(:,2)*k_sae;
-
+Caf =[0, 0, 0, 0;
+0, 0, 0, 0;
+0, 0, 1, 0;
+0, 0, 0, 0];
 valores_proprios_f = spec(Aaf);
 [wn_f,z_f] = damp(valores_proprios_f);
 tauf = 1/-valores_proprios_f(1);
@@ -201,7 +204,7 @@ Q=diag([Q11 Q22 Q33 Q44]);
 R = diag([R11 R22]);
 
 // Ganho K
-K1=lqr(H,Q,R);
+K1=-lqr(H,Q,R);
 //disp(K1)
 //P=riccati(A,B*inv(R)*B',Q,'c');
 //K1=-inv(R)*B'*P;
