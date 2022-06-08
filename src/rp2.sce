@@ -232,7 +232,7 @@ Ky = [K1(1,1), K1(1,4);
     K1(2,1), K1(2,4)];
 Kc = [0, K1(1,2), K1(1,3), 0;
     0, K1(2,2), K1(2,3), 0];
-//xcos("teste.zcos")
+xcos("teste.zcos")
 
 //H1 = syslin('c', A1, B, C1, D1);
 //h1 = ss2tf(H1)
