@@ -216,8 +216,8 @@ G = -C1*inv(A1)*B;
 F = inv(G); // ganho estático para seguimento de referência
 
 //gráfico
-bb_ref = 0*deg;
-phi_ref = max_phi*deg;
+bb_ref = 0;
+phi_ref = max_phi;
 x0 = zeros(4,1);
 select_bb_phi = [1, 0, 0, 0;
                 0, 0, 0, 1];
