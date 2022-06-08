@@ -201,7 +201,7 @@ R11 = 1/(max_da^2);
 R22 = 1/(max_dr^2);
 
 // Matriz Q e R
-Q=diag([Q11 Q22 Q33 Q44]);
+Q = diag([Q11 Q22 Q33 Q44]);
 R = diag([R11 R22]);
 
 // Ganho K
@@ -217,7 +217,7 @@ disp(valores_proprios, valores_proprios_f, valores_proprios_c, K1)
 disp(wn, wn_c)
 disp(z, z_c)
 
-A1 = A-B*K1;
+A1 = A+B*K1;
 C1 = [1, 0, 0, 0;
     0, 0, 0, 1;]
 D1 = zeros(2,2);
@@ -238,13 +238,13 @@ Kc = [0, K1(1,2), K1(1,3), 0;
     0, K1(2,2), K1(2,3), 0];
 xcos("teste.zcos")
 
-//H1 = syslin('c', A1, B, C1, D1);
-//h1 = ss2tf(H1)
-//disp(h1)
-//t = 0: 0.01 : 10;
-//y1 = csim('step', t, h1(1,1));
-//figure
-//plot (t, y1)
+H1 = syslin('c', A1, B, C1, D1);
+h1 = ss2tf(H1)
+disp(h1)
+t = 0: 0.01 : 10;
+y1 = csim('step', t, h1(1,1));
+figure
+plot (t, y1)
 
 
 //==============================================================================
