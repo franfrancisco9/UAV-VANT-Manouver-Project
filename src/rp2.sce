@@ -113,10 +113,10 @@ B = [0, Ydr;
     0, 0];
     
 // Matriz C
-C = [0, 0, 0, 0;
-    0, 0, 0, 0;
+C = [1, 0, 0, 0;
+    0, 1, 0, 0;
     0, 0, 1, 0;
-    0, 0, 0, 0];
+    0, 0, 0, 1];
 
 // Matriz D
 D = zeros(4,2);
@@ -197,14 +197,14 @@ Q=diag([Q11 Q22 Q33 Q44]);
 R = diag([R11 R22]);
 
 // Ganho K
-// Kc=lqr(H,Q_xx,R_uu);
-P=riccati(A,B*inv(R)*B',Q,'c');
-K1=-inv(R)*B'*P;
+K1=lqr(H,Q,R);
+//P=riccati(A,B*inv(R)*B',Q,'c');
+//K1=-inv(R)*B'*P;
 
 // Valores Próprios, w_n e fator de amortecimento
 valores_proprios_c=spec(A+B*K1);
 [wn_c,z_c] = damp(valores_proprios_c);
-disp(valores_proprios_c)
+disp(valores_proprios_c, z_c)
 // disp(wn, wn_c)
 disp(z_c)
 
@@ -216,9 +216,15 @@ G = -C1*inv(A1)*B;
 F = inv(G); // ganho estático para seguimento de referência
 
 //gráfico
-bb_ref = 30;
-phi_ref = 30;
-x0 = zeros(2,1);
+bb_ref = 0;
+phi_ref = max_phi;
+x0 = zeros(4,1);
+select_bb_phi = [1, 0, 0, 0;
+                0, 0, 0, 1];
+Ky = [K1(1,1), K1(1,4);
+    K1(2,1), K1(2,4)];
+Kc = [0, K1(1,2), K1(1,3), 0;
+    0, K1(2,2), K1(2,3), 0];
 
 //==============================================================================
 //==============================================================================
