@@ -172,17 +172,25 @@ disp(z, z_f)
 //==============================================================================
 
 //controlo ótimo
-//Método de Bryson (90% valores máximos)
+//Método de Bryson
+
+//Valores escolhidos para Q
+max_bb = 0.1*15*deg; 
+max_p = 0.1^2;
+max_r = 0.1^2;
+max_phi = 30*0.1*deg;
+//Valores escolhidos para R
+max_da = 30*0.1*deg;
+max_dr = 30*0.1*deg;
 
 //Dados da Matriz Q
-Q11 = 10; //((0.9*15*deg)^2); 
-Q22 = 1/(0.9^2);
-Q33 = 60; //(0.9^2);
-Q44 = 1/((30*0.9*deg)^2);
-
+Q11 = 1/(max_bb^2);
+Q22 = 1/(max_p^2);
+Q33 = 1/(max_r^2);
+Q44 = 1/(max_phi^2);
 //Dados da Matriz R
-R11 = 1/((30*0.9*deg)^2);
-R22= 1/((30*0.9*deg)^2);
+R11 = 1/(max_da^2);
+R22 = 1/(max_dr^2);
 
 // Matriz Q e R
 Q=diag([Q11 Q22 Q33 Q44]);
@@ -191,20 +199,26 @@ R = diag([R11 R22]);
 // Ganho K
 // Kc=lqr(H,Q_xx,R_uu);
 P=riccati(A,B*inv(R)*B',Q,'c');
-K=-inv(R)*B'*P;
+K1=-inv(R)*B'*P;
 
 // Valores Próprios, w_n e fator de amortecimento
-valores_proprios=spec(A+B*K);
-[wn,z] = damp(valores_proprios_c);
-disp(valores_proprios)
+valores_proprios_c=spec(A+B*K1);
+[wn_c,z_c] = damp(valores_proprios_c);
+disp(valores_proprios_c)
 // disp(wn, wn_c)
-disp(z)
+disp(z_c)
 
-A = A-B*K;
-C = [1, 0, 0, 0;
-      0, 0, 0, 1;]
-G = -C*inv(A)*B;
+A1 = A-B*K1;
+C1 = [1, 0, 0, 0;
+    0, 0, 0, 1;]
+D1 = zeros(2,2);
+G = -C1*inv(A1)*B;
 F = inv(G); // ganho estático para seguimento de referência
+
+//gráfico
+bb_ref = 30;
+phi_ref = 30;
+x0 = zeros(2,1);
 
 //==============================================================================
 //==============================================================================
