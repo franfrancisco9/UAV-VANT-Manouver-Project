@@ -183,13 +183,13 @@ tauf = 1/-valores_proprios_f(1);
 //Método de Bryson
 
 //Valores escolhidos para Q
-max_bb = 15*0.1*deg; 
-max_p = 0.1;
-max_r = 0.1;
-max_phi = 30*0.1*deg;
+max_bb = 15*0.6*deg; 
+max_p = 0.6;
+max_r = 0.6;
+max_phi = 30*0.6*deg;
 //Valores escolhidos para R
-max_da = 30*0.1*deg;
-max_dr = 30*0.1*deg;
+max_da = 30*0.6*deg;
+max_dr = 30*0.6*deg;
 
 //Dados da Matriz Q
 Q11 = 1/(max_bb^2);
@@ -226,7 +226,7 @@ G = -C1*inv(A1)*B;
 F = inv(G); // ganho estático para seguimento de referência
 
 //gráfico
-bb_ref = 0;
+bb_ref = max_bb;
 phi_ref = max_phi;
 x0 = zeros(4,1);
 
@@ -274,7 +274,11 @@ D_int =  zeros(6,2);
 H_int = syslin('c', A_int, B_int, C_int, D_int);
 K_int = -lqr(H_int , Q, R)
 disp(spec(A_int - B_int *K_int))
-
+valores_proprios_c=spec(A_int-B_int*K_int);
+[wn_c,z_c] = damp(valores_proprios_c);
+disp(valores_proprios, valores_proprios_f, valores_proprios_c, K1)
+disp(wn, wn_c)
+disp(z, z_c)
 
 Ky = [K_int(1,1), K_int(1,4);
         K_int(2,1), K_int(2,4)];
