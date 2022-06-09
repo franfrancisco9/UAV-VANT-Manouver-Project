@@ -150,9 +150,9 @@ h = ss2tf(H)
 disp(h(3,2))
 
 //Rootlocus
-clf();
-evans(h(3, 2),10)
-sgrid('red')
+//clf();
+//evans(h(3, 2),10)
+//sgrid('red')
 
 // k retirado do gráfico
 k_sae = [0 0 2.849 0];
@@ -183,13 +183,13 @@ tauf = 1/-valores_proprios_f(1);
 //Método de Bryson
 
 //Valores escolhidos para Q
-max_bb = 15*0.6*deg; 
-max_p = 0.6;
-max_r = 0.6;
-max_phi = 30*0.6*deg;
+max_bb = 15*0.5*deg; 
+max_p = 0.5;
+max_r = 0.5;
+max_phi = 30*0.5*deg;
 //Valores escolhidos para R
-max_da = 30*0.6*deg;
-max_dr = 30*0.6*deg;
+max_da = 30*0.5*deg;
+max_dr = 30*0.5*deg;
 
 //Dados da Matriz Q
 Q11 = 1/(max_bb^2);
@@ -226,7 +226,7 @@ G = -C1*inv(A1)*B;
 F = inv(G); // ganho estático para seguimento de referência
 
 //gráfico
-bb_ref = max_bb;
+bb_ref = 0;
 phi_ref = max_phi;
 x0 = zeros(4,1);
 
@@ -248,7 +248,7 @@ xcos("LQR.zcos")
 // plot (t, y1)
 
 //Integrativo
-Q = diag([Q11 Q22 Q33 Q44 0.1 0.1]);
+Q = diag([Q11 Q22 Q33 Q44 5 5]);
 
 A_int = [ybb,yp+sin(tt0),yr-1,g*cos(tt0)/u0, 0, 0;
     lbb + Ixz/Ix*nbb,lp + Ixz/Ix*np,lr + Ixz/Ix*nr,0, 0, 0; 
@@ -291,6 +291,9 @@ Kc = [0, K_int(1,2), K_int(1,3), 0;
     
 Kint = [K_int(1,5), K_int(1,6);
             K_int(2,5), K_int(2,6)];
+
+
+
     
 xcos("int.zcos")    
 //==============================================================================
