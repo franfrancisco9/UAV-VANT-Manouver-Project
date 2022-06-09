@@ -205,19 +205,19 @@ Q = diag([Q11 Q22 Q33 Q44]);
 R = diag([R11 R22]);
 
 // Ganho K
-K1=lqr(H,Q,R);
+K1=-lqr(H,Q,R);
 //disp(K1)
 //P=riccati(A,B*inv(R)*B',Q,'c');
 //K1=-inv(R)*B'*P;
 
 // Valores Próprios, w_n e fator de amortecimento
-valores_proprios_c=spec(A+B*K1);
+valores_proprios_c=spec(A-B*K1);
 [wn_c,z_c] = damp(valores_proprios_c);
 disp(valores_proprios, valores_proprios_f, valores_proprios_c, K1)
 disp(wn, wn_c)
 disp(z, z_c)
 
-A1 = A+B*K1;
+A1 = A-B*K1;
 C1 = [1, 0, 0, 0;
     0, 0, 0, 1;]
 D1 = zeros(2,2);
@@ -235,35 +235,77 @@ select_bb_phi = [1, 0, 0, 0;
 Ky = [K1(1,1), K1(1,4);
     K1(2,1), K1(2,4)];
 Kc = [0, K1(1,2), K1(1,3), 0;
-    0, K1(2,2), K1(2,3), 0];
-xcos("teste.zcos")
+    0, K1(2,2), K1(2,3),  0];
 
-H1 = syslin('c', A1, B, C1, D1);
-h1 = ss2tf(H1)
-disp(h1)
-t = 0: 0.01 : 10;
-y1 = csim('step', t, h1(1,1));
-figure
-plot (t, y1)
+xcos("LQR.zcos")
+
+// H1 = syslin('c', A1, B, C1, D1);
+// h1 = ss2tf(H1)
+// disp(h1)
+// t = 0: 0.01 : 10;
+// y1 = csim('step', t, h1(1,1));
+// figure
+// plot (t, y1)
+
+//Integrativo
+Q = diag([Q11 Q22 Q33 Q44 0.1 0.1]);
+
+A_int = [ybb,yp+sin(tt0),yr-1,g*cos(tt0)/u0, 0, 0;
+    lbb + Ixz/Ix*nbb,lp + Ixz/Ix*np,lr + Ixz/Ix*nr,0, 0, 0; 
+    nbb + Ixz/Iz*lbb,np + Ixz/Iz*lp,nr + Ixz/Iz*lr,0, 0, 0;
+    0,1,tan(tt0),0, 0, 0;
+    1, 0, 0, 0, 0, 0;
+    0, 0, 0, 1, 0, 0];
+
+// Matriz B com integrativos
+B_int = [0, Ydr;
+    Lda + Ixz/Ix*Nda, Ldr + Ixz/Ix*Ndr;
+    Nda + Ixz/Iz*Lda, Ndr + Ixz/Iz*Ldr;
+    0, 0;
+    0, 0;
+    0, 0];
+C_int = [1, 0, 0, 0, 0, 0;
+    0, 1, 0, 0, 0, 0
+    0, 0, 1, 0, 0, 0;
+    0, 0, 0, 1, 0, 0;
+    0, 0, 0, 0, 1, 0;
+    0, 0, 0, 0, 0, 1];
+D_int =  zeros(6,2);
+H_int = syslin('c', A_int, B_int, C_int, D_int);
+K_int = -lqr(H_int , Q, R)
+disp(spec(A_int - B_int *K_int))
 
 
+Ky = [K_int(1,1), K_int(1,4);
+        K_int(2,1), K_int(2,4)];
+
+    
+Kc = [0, K_int(1,2), K_int(1,3), 0;
+      0, K_int(2,2), K_int(2,3), 0];
+
+
+    
+Kint = [K_int(1,5), K_int(1,6);
+            K_int(2,5), K_int(2,6)];
+    
+xcos("int.zcos")    
 //==============================================================================
 //==============================================================================
 
 // Avaliação das qualidades de voo
 
 //modo espiral
-re = real(valores_proprios(4,1))
+re = real(valores_proprios_c(4,1))
 if re < 0
     disp("NÍVEL 1: Espiral estável")
-    disp(valores_proprios(1,1))
+    disp(valores_proprios_c(4,1))
 elseif T2 < 12 then
     disp("T2 Espiral menor que 12");
     disp(T2);
 end
 
 //modo rolamento
-Tp = 1 / wn(1,1) // tem que ser menor 1
+Tp = 1 / wn_c(1,1) // tem que ser menor 1
 if 1 < Tp then
     disp("Tp Rolamento maior que 1");
     disp(Tp);
@@ -274,7 +316,7 @@ end
 
 
 //modo rolamento holandes
-zz_rh = z(2,1) // maior do que 0.19 (imposto pelo projeto maior que 0.6)
+zz_rh = z_c(2,1) // maior do que 0.19 (imposto pelo projeto maior que 0.6)
 if zz_rh < 0.6 then
     disp("Amortecimento RH menor que 0.6");
     disp(zz_rh);
@@ -283,7 +325,7 @@ else
     disp(zz_rh);
 end
 
-wn_rh = wn(2,1) // maior do que 0.5
+wn_rh = wn_c(2,1) // maior do que 0.5
 if wn_rh < 1 then
     disp("Frequencia RH menor que 1");
     disp(wn_rh);
