@@ -150,9 +150,9 @@ h = ss2tf(H)
 disp(h(3,2))
 
 //Rootlocus
-//clf();
-//evans(h(3, 2),10)
-//sgrid('red')
+clf();
+evans(h(3, 2),10)
+sgrid('red')
 
 // k retirado do gráfico
 k_sae = [0 0 2.849 0];
