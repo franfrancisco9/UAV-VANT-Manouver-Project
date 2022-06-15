@@ -192,6 +192,7 @@ Q11 = 1/(max_bb^2);
 Q22 = 1/(max_p^2);
 Q33 = 1/(max_r^2);
 Q44 = 1/(max_phi^2);
+
 //Dados da Matriz R
 R11 = 1/(max_da^2);
 R22 = 1/(max_dr^2);
@@ -242,9 +243,7 @@ Kc = [0, K1(1,2), K1(1,3), 0;
 
 //Integrativo
 Q =  diag([Q11 Q22 Q33 Q44 5 5]);
-// Sensore:
-Q =  diag([Q11*1000 Q22*10 Q33*10 Q44*1000 500 50]);
-R = diag([R11*10000 R22*100000])
+
 A_int = [ybb,yp+sin(tt0),yr-1,g*cos(tt0)/u0, 0, 0;
     lbb + Ixz/Ix*nbb,lp + Ixz/Ix*np,lr + Ixz/Ix*nr,0, 0, 0; 
     nbb + Ixz/Iz*lbb,np + Ixz/Iz*lp,nr + Ixz/Iz*lr,0, 0, 0;
@@ -266,6 +265,7 @@ C_int = [1, 0, 0, 0, 0, 0;
     0, 0, 0, 0, 1, 0;
     0, 0, 0, 0, 0, 1];
 D_int =  zeros(6,2);
+
 H_int = syslin('c', A_int, B_int, C_int, D_int);
 K_int = -lqr(H_int , Q, R)
 disp(spec(A_int - B_int *K_int))
@@ -286,6 +286,66 @@ Kc = [0, K_int(1,2), K_int(1,3), 0;
     
 Kint = [K_int(1,5), K_int(1,6);
             K_int(2,5), K_int(2,6)];
+            
+            
+// Estimador
+// Sensores:
+Q_est =  diag([Q11*1000 Q22*10 Q33*10 Q44*1000 1 500 50]);
+R_est = diag([R11*10000 R22*100000])
+
+
+x_0_est = [0; 0; 0; 0; 0; 0; 0]
+A_est = [ybb,yp+sin(tt0),yr-1,g*cos(tt0)/u0, 0, 0, 0;
+    lbb + Ixz/Ix*nbb,lp + Ixz/Ix*np,lr + Ixz/Ix*nr,0, 0, 0, 0; 
+    nbb + Ixz/Iz*lbb,np + Ixz/Iz*lp,nr + Ixz/Iz*lr,0, 0, 0, 0;
+    0,1,tan(tt0),0, 0, 0, 0;
+    1, 0, 0, 0, 0, 0, 0;
+    0, 0, 0, 1, 0, 0, 0;
+    0, 0, 1/cos(tt0), 0, 0, 0, 0];
+
+// Matriz B com integrativos
+B_est = [0, Ydr;
+    Lda + Ixz/Ix*Nda, Ldr + Ixz/Ix*Ndr;
+    Nda + Ixz/Iz*Lda, Ndr + Ixz/Iz*Ldr;
+    0, 0;
+    0, 0;
+    0, 0;
+    0, 0];
+C_est = [1, 0, 0, 0, 0, 0, 0;
+    0, 1, 0, 0, 0, 0, 0;
+    0, 0, 1, 0, 0, 0, 0;
+    0, 0, 0, 1, 0, 0, 0;
+    0, 0, 0, 0, 1, 0, 0;
+    0, 0, 0, 0, 0, 1, 0;
+    0, 0, 0, 0, 0, 0, 1];
+D_est =  zeros(7,2);
+
+C_kalman = [0 1 0 0 0;
+            0 0 1 0 0;
+            0 0 0 1 0;
+            0 0 0 0 1];
+D_kalman = zeros(4,2);
+
+H_est = syslin('c', A_est, B_est, C_est, D_est);
+K_est = -lqr(H_est , Q_est, R_est)
+disp(spec(A_est - B_est *K_est))
+valores_proprios_est=spec(A_est-B_est*K_est);
+[wn_est,z_est] = damp(valores_proprios_est);
+disp(valores_proprios, valores_proprios_est, K_est)
+disp(wn, wn_est)
+disp(z, z_est)
+
+Ky_est = [K_est(1,1), K_est(1,4);
+        K_est(2,1), K_est(2,4)];
+
+    
+Kc_est = [0, K_est(1,2), K_est(1,3), 0, K_est(1,5);
+      0, K_est(2,2), K_est(2,3), 0, K_est(2,5)];
+
+
+    
+Kint_est = [K_est(1,6), K_est(1,7);
+            K_est(2,6), K_est(2,7)];
 
 
 
@@ -356,3 +416,6 @@ ad_lower_v = 0; // V
 ad_quantization = (ad_upper_v-ad_lower_v)/(2^(ad_bits) - 1);
 ad_rmd = 1.5 * ad_quantization;
 ad_f = atuadores_f; // Hz
+
+R_kalman= diag([10^(-5) (g_rms)^2 (a_rms)^2 (pe_rms)^2]);
+Q_kalman= 100*eye(5);
