@@ -351,3 +351,4 @@ ad_upper_v = 5; // V
 ad_lower_v = 0; // V
 ad_quantization = (ad_upper_v-ad_lower_v)/(2^(ad_bits) - 1);
 ad_rmd = 1.5 * ad_quantization;
+ad_f = atuadores_f; // Hz
