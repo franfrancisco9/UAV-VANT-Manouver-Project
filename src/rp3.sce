@@ -319,12 +319,14 @@ a_lower = -4*g;// m/s^2
 a_res = 0.4 * 0.001 * g; // m/s^2
 a_rms = 3 * 0.001 *g; // m/s^2
 
-// Giroscópio
-g_upper = 300 * deg;  // rad/s
-g_lower = -300 * deg; // rad/s
+// Giroscópio de Razão Angular
+g_upper = 300;  // º/s
+g_lower = -300; // º/s
 g_upper_v = 4.3; // V
 g_lower_v = 0.7; // V
-g_rms = 4.4 * deg; // rad/s
+g_rms = 4.4; // º/s
+g_gain = (g_upper_v-g_lower_v)/(g_upper-g_lower);
+g_offset = 5 - g_upper * g_gain;
 
 // Magnetómetro
 m_upper = 8; // gauss
