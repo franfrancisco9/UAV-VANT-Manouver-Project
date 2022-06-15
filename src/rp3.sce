@@ -150,9 +150,9 @@ h = ss2tf(H)
 disp(h(3,2))
 
 //Rootlocus
-clf();
-evans(h(3, 2),10)
-sgrid('red')
+//clf();
+//evans(h(3, 2),10)
+//sgrid('red')
 
 // k retirado do gráfico
 k_sae = [0 0 2.849 0];
@@ -241,8 +241,10 @@ Kc = [0, K1(1,2), K1(1,3), 0;
 // plot (t, y1)
 
 //Integrativo
-Q = diag([Q11 Q22 Q33 Q44 5 5]);
-
+Q =  diag([Q11 Q22 Q33 Q44 5 5]);
+// Sensore:
+Q =  diag([Q11*1000 Q22*10 Q33*10 Q44*1000 500 50]);
+R = diag([R11*10000 R22*100000])
 A_int = [ybb,yp+sin(tt0),yr-1,g*cos(tt0)/u0, 0, 0;
     lbb + Ixz/Ix*nbb,lp + Ixz/Ix*np,lr + Ixz/Ix*nr,0, 0, 0; 
     nbb + Ixz/Iz*lbb,np + Ixz/Iz*lp,nr + Ixz/Iz*lr,0, 0, 0;
