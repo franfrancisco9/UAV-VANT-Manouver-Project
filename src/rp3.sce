@@ -290,8 +290,8 @@ Kint = [K_int(1,5), K_int(1,6);
             
 // Estimador
 // Sensores:
-Q_est =  diag([Q11*1000 Q22*10 Q33*10 Q44*1000 1 500 50]);
-R_est = diag([R11*10000 R22*100000])
+Q_est =  diag([Q11*1000 Q22 Q33 Q44*100 1 5 0.5]);
+R_est = diag([R11*50000 R22*500000])
 
 
 x_0_est = [0; 0; 0; 0; 0; 0; 0]
@@ -331,9 +331,9 @@ K_est = -lqr(H_est , Q_est, R_est)
 disp(spec(A_est - B_est *K_est))
 valores_proprios_est=spec(A_est-B_est*K_est);
 [wn_est,z_est] = damp(valores_proprios_est);
-disp(valores_proprios, valores_proprios_est, K_est)
-disp(wn, wn_est)
-disp(z, z_est)
+disp(valores_proprios_est, K_est)
+disp(wn_est)
+disp(z_est)
 
 Ky_est = [K_est(1,1), K_est(1,4);
         K_est(2,1), K_est(2,4)];
@@ -387,18 +387,19 @@ g_lower = -300; // º/s
 g_upper_v = 4.3; // V
 g_lower_v = 0.7; // V
 g_rms = 4.4; // º/s
-g_gain = (g_upper_v-g_lower_v)/(g_upper-g_lower);
-g_offset = 5 - g_upper * g_gain;
+g_gain_gyro = (g_upper_v-g_lower_v)/(g_upper-g_lower);
+// g_offset = 5 - g_upper * g_gain;
 //Ganho e offset de tensão do giroscópio para tensões de AD
-// g_gain = (5-0)/(g_upper_v-g_lower_v);
-// g_offset = 0 - g_lower_v * g_gain;
+g_gain = g_gain_gyro * (5-0)/(g_upper_v-g_lower_v);
+g_offset = 5 - g_upper * g_gain;
 
 // Magnetómetro
 m_upper = 8; // gauss
 m_lower = -8; // gauss
 m_res = 0.005; // gauss
 m_rms = 0.015; // gauss
-
+mag_lisboa_y = 0.004 // gauss
+mag_lisboa_z = 0.356 // gauss
 // Sonar
 s_upper = 7.5; // m
 s_lower = 0.2; // m
@@ -416,7 +417,7 @@ gps_v_rms = 0.1; // m/s
 ad_bits = 12; // bits
 ad_upper_v = 5; // V
 ad_lower_v = 0; // V
-ad_quantization = (ad_upper_v-ad_lower_v)/(2(2^(ad_bits) - 1));
+ad_quantization = (ad_upper_v-ad_lower_v)/(2*(2^(ad_bits) - 1));
 ad_rmd = 1.5 * ad_quantization;
 ad_f = atuadores_f; // Hz
 
