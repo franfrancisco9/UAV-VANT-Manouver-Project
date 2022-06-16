@@ -290,9 +290,8 @@ Kint = [K_int(1,5), K_int(1,6);
             
 // Estimador
 // Sensores:
-Q_est =   diag([Q11*10 Q22*100 Q33*100 Q44*100 10 50 50]);
+Q_est =   10000*diag([Q11 Q22 Q33 Q44 1 0.5 5]);
 R_est = 10000 * diag([R11 R22])
-
 
 x_0_est = [0; 0; 0; 0; 0; 0; 0]
 A_est = [ybb,yp+sin(tt0),yr-1,g*cos(tt0)/u0, 0, 0, 0;
