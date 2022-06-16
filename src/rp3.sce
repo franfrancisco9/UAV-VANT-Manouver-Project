@@ -389,6 +389,9 @@ g_lower_v = 0.7; // V
 g_rms = 4.4; // º/s
 g_gain = (g_upper_v-g_lower_v)/(g_upper-g_lower);
 g_offset = 5 - g_upper * g_gain;
+//Ganho e offset de tensão do giroscópio para tensões de AD
+// g_gain = (5-0)/(g_upper_v-g_lower_v);
+// g_offset = 0 - g_lower_v * g_gain;
 
 // Magnetómetro
 m_upper = 8; // gauss
@@ -413,7 +416,7 @@ gps_v_rms = 0.1; // m/s
 ad_bits = 12; // bits
 ad_upper_v = 5; // V
 ad_lower_v = 0; // V
-ad_quantization = (ad_upper_v-ad_lower_v)/(2^(ad_bits) - 1);
+ad_quantization = (ad_upper_v-ad_lower_v)/(2(2^(ad_bits) - 1));
 ad_rmd = 1.5 * ad_quantization;
 ad_f = atuadores_f; // Hz
 
