@@ -290,8 +290,8 @@ Kint = [K_int(1,5), K_int(1,6);
             
 // Estimador
 // Sensores:
-Q_est =  diag([Q11*1000 Q22 Q33 Q44*100 1 5 0.5]);
-R_est = diag([R11*50000 R22*500000])
+Q_est =   diag([Q11*10 Q22*100 Q33*100 Q44*100 10 50 50]);
+R_est = 10000 * diag([R11 R22])
 
 
 x_0_est = [0; 0; 0; 0; 0; 0; 0]
@@ -394,12 +394,12 @@ g_gain = g_gain_gyro * (5-0)/(g_upper_v-g_lower_v);
 g_offset = 5 - g_upper * g_gain;
 
 // Magnetómetro
-m_upper = 8; // gauss
-m_lower = -8; // gauss
-m_res = 0.005; // gauss
-m_rms = 0.015; // gauss
-mag_lisboa_y = 0.004 // gauss
-mag_lisboa_z = 0.356 // gauss
+m_upper = 8 * 10000; // tesla
+m_lower = -8 * 10000; // tesla
+m_res = 0.005 * 10000; // tesla
+m_rms = 0.015 * 10000; // tesla
+mag_lisboa_y = 0.004 * 10000// tesla
+mag_lisboa_z = 0.356 * 10000 // tesla
 // Sonar
 s_upper = 7.5; // m
 s_lower = 0.2; // m
