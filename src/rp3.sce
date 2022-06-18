@@ -332,8 +332,7 @@ B_kalman = [0, Ydr;
     0, 0;
     0, 0]
     
-C_kalman = [0 0 0 0 0;
-            0 1 0 0 0;
+C_kalman = [0 1 0 0 0;
             0 0 1 0 0;
             0 0 0 1 0;
             0 0 0 0 1];
@@ -360,14 +359,12 @@ Kc_est = [0, K_est(1,2), K_est(1,3), 0, K_est(1,5);
 Kint_est = [K_est(1,6), K_est(1,7);
             K_est(2,6), K_est(2,7)];
 
-R_kalman= 100*eye(7,7);
-Q_kalman= 100*eye(7,7);
+R_kalman= 10000 * eye(4,4);
+Q_kalman= 0.0001 * diag([1, 1, 1, 1, 1])
 
-[L, x_lqe] = lqe(H_est, Q_kalman, R_kalman)
-A_kalman = A_est - B_est*K_est -L * C_est;
-B_kalman = L;
-C_kalman = -K_est;
-D_kalman = zeros(7,2);
+H_kalman = syslin('c', A_kalman, B_kalman, C_kalman, D_kalman);
+[L, x_lqe] = lqe(H_kalman, Q_kalman, R_kalman)
+
 
     
 // xcos("int.zcos")    
