@@ -298,9 +298,9 @@ A_est = [ybb,yp+sin(tt0),yr-1,g*cos(tt0)/u0, 0, 0, 0;
     lbb + Ixz/Ix*nbb,lp + Ixz/Ix*np,lr + Ixz/Ix*nr,0, 0, 0, 0; 
     nbb + Ixz/Iz*lbb,np + Ixz/Iz*lp,nr + Ixz/Iz*lr,0, 0, 0, 0;
     0,1,tan(tt0),0, 0, 0, 0;
+    0, 0, 1/cos(tt0), 0, 0, 0, 0;
     1, 0, 0, 0, 0, 0, 0;
-    0, 0, 0, 1, 0, 0, 0;
-    0, 0, 1/cos(tt0), 0, 0, 0, 0];
+    0, 0, 0, 1, 0, 0, 0];
 
 // Matriz B com integrativos
 B_est = [0, Ydr;
@@ -319,7 +319,21 @@ C_est = [1, 0, 0, 0, 0, 0, 0;
     0, 0, 0, 0, 0, 0, 1];
 D_est =  zeros(7,2);
 
-C_kalman = [0 1 0 0 0;
+A_kalman = [ybb,yp+sin(tt0),yr-1,g*cos(tt0)/u0, 0;
+    lbb + Ixz/Ix*nbb,lp + Ixz/Ix*np,lr + Ixz/Ix*nr,0, 0; 
+    nbb + Ixz/Iz*lbb,np + Ixz/Iz*lp,nr + Ixz/Iz*lr,0, 0;
+    0,1,tan(tt0),0, 0;
+    0, 0, 1/cos(tt0), 0, 0];
+
+// Matriz B com integrativos
+B_kalman = [0, Ydr;
+    Lda + Ixz/Ix*Nda, Ldr + Ixz/Ix*Ndr;
+    Nda + Ixz/Iz*Lda, Ndr + Ixz/Iz*Ldr;
+    0, 0;
+    0, 0]
+    
+C_kalman = [0 0 0 0 0;
+            0 1 0 0 0;
             0 0 1 0 0;
             0 0 0 1 0;
             0 0 0 0 1];
@@ -346,7 +360,14 @@ Kc_est = [0, K_est(1,2), K_est(1,3), 0, K_est(1,5);
 Kint_est = [K_est(1,6), K_est(1,7);
             K_est(2,6), K_est(2,7)];
 
+R_kalman= 100*eye(7,7);
+Q_kalman= 100*eye(7,7);
 
+[L, x_lqe] = lqe(H_est, Q_kalman, R_kalman)
+A_kalman = A_est - B_est*K_est -L * C_est;
+B_kalman = L;
+C_kalman = -K_est;
+D_kalman = zeros(7,2);
 
     
 // xcos("int.zcos")    
@@ -420,5 +441,4 @@ ad_quantization = (ad_upper_v-ad_lower_v)/(2*(2^(ad_bits) - 1));
 ad_rmd = 1.5 * ad_quantization;
 ad_f = atuadores_f; // Hz
 
-R_kalman= diag([10^(-5) (g_rms)^2 (a_rms)^2 (pe_rms)^2]);
-Q_kalman= 100*eye(5);
+
