@@ -412,12 +412,12 @@ g_gain = g_gain_gyro * (5-0)/(g_upper_v-g_lower_v);
 g_offset = 5 - g_upper * g_gain;
 
 // Magnetómetro
-m_upper = 8 * 10000; // tesla
-m_lower = -8 * 10000; // tesla
-m_res = 0.005 * 10000; // tesla
-m_rms = 0.015 * 10000; // tesla
-mag_lisboa_y = 0.004 * 10000// tesla
-mag_lisboa_z = 0.356 * 10000 // tesla
+m_upper = 8 * 10^-4; // tesla
+m_lower = -8 * 10^-4; // tesla
+m_res = 0.005 * 10^-4; // tesla
+m_rms = 0.015 * 10^-4; // tesla
+mag_lisboa_y = 0.004 * 10^-4// tesla
+mag_lisboa_z = 0.356 * 10^-4 // tesla
 
 // Sonar
 s_upper = 7.5; // m
