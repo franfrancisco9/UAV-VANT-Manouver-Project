@@ -362,6 +362,7 @@ Kint_est = [K_est(1,6), K_est(1,7);
 R_kalman= 10000 * eye(4,4);
 Q_kalman= 0.0001 * diag([1, 1, 1, 1, 1])
 
+
 H_kalman = syslin('c', A_kalman, B_kalman, C_kalman, D_kalman);
 [L, x_lqe] = lqe(H_kalman, Q_kalman, R_kalman)
 
@@ -417,6 +418,7 @@ m_res = 0.005 * 10000; // tesla
 m_rms = 0.015 * 10000; // tesla
 mag_lisboa_y = 0.004 * 10000// tesla
 mag_lisboa_z = 0.356 * 10000 // tesla
+
 // Sonar
 s_upper = 7.5; // m
 s_lower = 0.2; // m
