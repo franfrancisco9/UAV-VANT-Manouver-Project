@@ -290,8 +290,6 @@ Kint = [K_int(1,5), K_int(1,6);
             
 // Estimador
 // Sensores:
-Q_est =   10000*diag([Q11 Q22 Q33 Q44 1 0.5 5]);
-R_est = 10000 * diag([R11 R22])
 
 x_0_est = [0; 0; 0; 0; 0; 0; 0]
 A_est = [ybb,yp+sin(tt0),yr-1,g*cos(tt0)/u0, 0, 0, 0;
@@ -338,6 +336,8 @@ C_kalman = [0 1 0 0 0;
             0 0 0 0 1];
 D_kalman = zeros(4,2);
 
+Q_est =   10000 * diag([Q11 Q22 Q33 Q44 1 0.5 5]);
+R_est = 10000 * diag([R11 R22])
 H_est = syslin('c', A_est, B_est, C_est, D_est);
 K_est = -lqr(H_est , Q_est, R_est)
 disp(spec(A_est - B_est *K_est))
@@ -358,9 +358,9 @@ Kc_est = [0, K_est(1,2), K_est(1,3), 0, K_est(1,5);
     
 Kint_est = [K_est(1,6), K_est(1,7);
             K_est(2,6), K_est(2,7)];
-
-R_kalman= 10000 * eye(4,4);
-Q_kalman= 0.0001 * diag([1, 1, 1, 1, 1])
+            
+R_kalman= 1e12 * diag([1, 1, 1, 1])
+Q_kalman= 2e7 * diag([1, 1, 1, 1, 1])
 
 
 H_kalman = syslin('c', A_kalman, B_kalman, C_kalman, D_kalman);
