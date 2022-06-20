@@ -449,7 +449,9 @@ ad_f = atuadores_f; // Hz
 vento_N = -3; // m/s
 PosicaoInicial_N = 0; // m
 PosicaoInicial_E = 0; // m
+G = 1; // para mudar
 
+xcos("RF_semest.zcos")
 xcos("RF.zcos")
 
 
