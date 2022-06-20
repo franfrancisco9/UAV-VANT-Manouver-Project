@@ -322,7 +322,7 @@ A_kalman = [ybb,yp+sin(tt0),yr-1,g*cos(tt0)/u0, 0;
     nbb + Ixz/Iz*lbb,np + Ixz/Iz*lp,nr + Ixz/Iz*lr,0, 0;
     0,1,tan(tt0),0, 0;
     0, 0, 1/cos(tt0), 0, 0];
-
+x_0_kalman = [0; 0; 0; 0; 0]
 // Matriz B com integrativos
 B_kalman = [0, Ydr;
     Lda + Ixz/Ix*Nda, Ldr + Ixz/Ix*Ndr;
@@ -330,11 +330,19 @@ B_kalman = [0, Ydr;
     0, 0;
     0, 0]
     
-C_kalman = [0 1 0 0 0;
+C_kalman = [1, 0, 0, 0, 0;
+    0, 1, 0, 0, 0;
+    0, 0, 1, 0, 0;
+    0, 0, 0, 1, 0;
+    0, 0, 0, 0, 1;];
+    
+D_kalman =  zeros(5,2); 
+   
+C_kalman_filter = [0 1 0 0 0;
             0 0 1 0 0;
             0 0 0 1 0;
             0 0 0 0 1];
-D_kalman = zeros(4,2);
+D_kalman_filter = zeros(4,2);
 
 Q_est =   10000 * diag([Q11 Q22 Q33 Q44 1 0.5 5]);
 R_est = 10000 * diag([R11 R22])
@@ -359,11 +367,21 @@ Kc_est = [0, K_est(1,2), K_est(1,3), 0, K_est(1,5);
 Kint_est = [K_est(1,6), K_est(1,7);
             K_est(2,6), K_est(2,7)];
             
-R_kalman= 1e12 * diag([1, 1, 1, 1])
-Q_kalman= 2e7 * diag([1, 1, 1, 1, 1])
+R_kalman= 10000000000 * diag([1e-5 19.36 8.654e-4 0.1296]);
+Q_kalman= 0.000000001 * eye(5,5);
 
-
+Q_kalman2 =   10000 * diag([Q11 Q22 Q33 Q44 1]);
+R_kalman2 = 10000 * diag([R11 R22])
 H_kalman = syslin('c', A_kalman, B_kalman, C_kalman, D_kalman);
+K_kalman = -lqr(H_kalman , Q_kalman2, R_kalman2)
+disp(spec(A_kalman - B_kalman *K_kalman))
+valores_proprios_kalman=spec(A_kalman-B_kalman*K_kalman);
+[wn_kalman,z_kalman] = damp(valores_proprios_kalman);
+disp(valores_proprios_kalman, K_kalman)
+disp(wn_kalman)
+disp(z_kalman)
+
+H_kalman = syslin('c', A_kalman-B_kalman*K_kalman , B_kalman, C_kalman_filter, D_kalman_filter);
 [L, x_lqe] = lqe(H_kalman, Q_kalman, R_kalman)
 
 
@@ -449,9 +467,7 @@ ad_f = atuadores_f; // Hz
 vento_N = -3; // m/s
 PosicaoInicial_N = 0; // m
 PosicaoInicial_E = 0; // m
-G = 1; // para mudar
 
-xcos("RF_semest.zcos")
-xcos("RF.zcos")
+// xcos("RF.zcos")
 
 
