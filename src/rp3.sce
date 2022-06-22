@@ -367,7 +367,7 @@ Kc_est = [0, K_est(1,2), K_est(1,3), 0, K_est(1,5);
 Kint_est = [K_est(1,6), K_est(1,7);
             K_est(2,6), K_est(2,7)];
             
-R_kalman= 10000000000 * diag([1e-5 19.36 8.654e-4 0.1296]);
+R_kalman= 10000000000 * diag([1e-5 19.36 8.654e-4 0.1296 1]);
 Q_kalman= 0.000000001 * eye(5,5);
 
 Q_kalman2 =   10000 * diag([Q11 Q22 Q33 Q44 1]);
@@ -381,7 +381,7 @@ disp(valores_proprios_kalman, K_kalman)
 disp(wn_kalman)
 disp(z_kalman)
 
-H_kalman = syslin('c', A_kalman-B_kalman*K_kalman , B_kalman, C_kalman_filter, D_kalman_filter);
+H_kalman = syslin('c', A_kalman-B_kalman*K_kalman , B_kalman, C_kalman, D_kalman);
 [L, x_lqe] = lqe(H_kalman, Q_kalman, R_kalman)
 
 
@@ -469,8 +469,8 @@ PosicaoInicial_N = 0; // m
 PosicaoInicial_E = 0; // m
 G = 9.81; // m/s^2
 
-xcos("RF.zcos")
-xcos("RF_semest.zcos")
+//xcos("RF.zcos")
+//xcos("RF_semest.zcos")
 
 
 passo=1;
