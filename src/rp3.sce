@@ -34,7 +34,7 @@ gg0 = 0*deg;         // gama0_rad
 tt0 = aa0 + gg0;     // teta0_rad
 u0 = 29.2*kn;        // em m/s
 flaps = 0*deg;
-
+t_sim = 1000;
 // inputs : 
 th0 =58;             // %
 de0 = -7.44*deg; 
