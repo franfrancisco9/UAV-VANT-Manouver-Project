@@ -565,8 +565,8 @@ if j<len then
     if dist_target < Influencia-1 then
         break;
     else
-        ang = atan(dir_dest(1 2), dir_dest(1 1))
-        erro_ang = ang - in(1);
+        //ang = atan(dir_dest(1 2), dir_dest(1 1))
+        //erro_ang = ang - in(1);
         //vec_anterior=vec_actual;
     end,
     
