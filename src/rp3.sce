@@ -476,22 +476,22 @@ xcos("RF_semest.zcos")
 passo=1;
 
 // AB
-x0N=0:passo:400*u0;
+x0N=0:passo:400;
 x0E=zeros(1, max(size(x0N)));
 
 //BC
-r = 100*u0;
-x = 100*u0;
-y = 400*u0;
+r = 100;
+x = 100;
+y = 400;
 
 theta = linspace(%pi, 0, 4720);
 xCirc = r * cos(theta) + x;
 yCirc = r * sin(theta) + y;
 
 //CD-SemiCirc1
-r1 = 100*u0;
-x1 = 300*u0;
-y1 = 400*u0;
+r1 = 100;
+x1 = 300;
+y1 = 400;
 n1 = r1*%pi; //perimetro calculado de modo a ter um ponto por metro de trajetória
 
 theta1 = linspace(-%pi, 0, 4720); //perimetro aproximadamente = 4720
@@ -499,9 +499,9 @@ xCirc1 = r1 * cos(theta1) + x1;
 yCirc1 = r1 * sin(theta1) + y1;
 
 //CD-SemiCirc2
-r2 = 95*u0;
-x2 = 305*u0;
-y2 = 400*u0;
+r2 = 95;
+x2 = 305;
+y2 = 400;
 n2 = r2*%pi;
 
 theta2 = linspace(0, %pi, 4485);
@@ -509,14 +509,14 @@ xCirc2 = r2 * cos(theta2) + x2;
 yCirc2 = r2 * sin(theta2) + y2;
 
 //DE
-x1N=400*u0:-passo:0;
+x1N=400:-passo:0;
 x1E=zeros(1, max(size(x0N)));
-x1E(1,:) = 210*u0;
+x1E(1,:) = 210;
 
 //EF
-r3 = 105*u0;
-x3 = 105*u0;
-y3 = 0*u0;
+r3 = 105;
+x3 = 105;
+y3 = 0;
 n3 = r3*%pi;
 
 theta3 = linspace(0, -%pi, 4955);
@@ -526,7 +526,7 @@ yCirc3 = r3 * sin(theta3) + y3;
 
 //Percurso completo
 Path = cat(1, [x0E' x0N'], cat(1,[xCirc' yCirc']), cat(1,[xCirc1' yCirc1']), cat(1,[xCirc2' yCirc2']), [x1E' x1N'], cat(1,[xCirc3' yCirc3']));
-
+clf(25000)
 plot(Path(:,1),Path(:,2),'LineWidth',3)
 
 //Algoritmo
@@ -555,7 +555,7 @@ perim_percurso = max(size(Path));
 
 
 //Esta parte tem de ser alterada!
-if j<len then
+if j<perim_percurso then
     vec_dest=[Path(j,1) Path(j,2)];
     vec_actual=[in(3) in(2)];
 
