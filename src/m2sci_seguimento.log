@@ -1,0 +1,56 @@
+  ****** Beginning of mfile2sci() session ******
+  File to convert: D:/Downloads/UAV Final (Projecto 25)/UAV Final/CV/seguimento.m
+  Result file path: D:/Github/UAV-VANT-Manouver-Project/src/
+  Recursive mode: OFF
+  Only double values used in M-file: NO
+  Verbose mode: 3
+  Generate formatted code: NO
+  M-file reading...
+  M-file reading: Done
+  Syntax modification...
+  Syntax modification: Done
+  Macro to tree conversion...
+  Conversion of M-tree...
+  ****** Beginning of mfile2sci() session ******
+  File to convert: D:/Downloads/UAV Final (Projecto 25)/UAV Final/CV/seguimento.m
+  Result file path: D:/Github/UAV-VANT-Manouver-Project/src/
+  Recursive mode: OFF
+  Only double values used in M-file: NO
+  Verbose mode: 3
+  Generate formatted code: NO
+  M-file reading...
+  M-file reading: Done
+  Syntax modification...
+  Syntax modification: Done
+  Macro to tree conversion...
+  Conversion of M-tree...
+  ****** Beginning of mfile2sci() session ******
+  File to convert: D:/Downloads/seguimento.m
+  Result file path: D:/Github/UAV-VANT-Manouver-Project/src/
+  Recursive mode: OFF
+  Only double values used in M-file: NO
+  Verbose mode: 3
+  Generate formatted code: NO
+  M-file reading...
+  M-file reading: Done
+  Syntax modification...
+  Syntax modification: Done
+  Warning: file D:/Downloads/seguimento.m defines function algoritmo1 instead of seguimento
+           algoritmo1.sci, algoritmo1.cat and sci_algoritmo1.sci will be generated !
+  Macro to tree conversion...
+  Conversion of M-tree...
+  ****** Beginning of mfile2sci() session ******
+  File to convert: D:/Downloads/seguimento.m
+  Result file path: D:/Github/UAV-VANT-Manouver-Project/src/
+  Recursive mode: OFF
+  Only double values used in M-file: NO
+  Verbose mode: 3
+  Generate formatted code: NO
+  M-file reading...
+  M-file reading: Done
+  Syntax modification...
+  Syntax modification: Done
+  Warning: file D:/Downloads/seguimento.m defines function algoritmo1 instead of seguimento
+           algoritmo1.sci, algoritmo1.cat and sci_algoritmo1.sci will be generated !
+  Macro to tree conversion...
+  Conversion of M-tree...
