@@ -344,8 +344,8 @@ C_kalman_filter = [0 1 0 0 0;
             0 0 0 0 1];
 D_kalman_filter = zeros(4,2);
 
-Q_est =   10000 * diag([Q11 Q22 Q33 Q44 1 0.5 5]);
-R_est = 10000 * diag([R11 R22])
+Q_est =   10000000 * diag([Q11 Q22 Q33 Q44 600 5 0.5]);
+R_est = 1000000 * diag([R11 R22])
 H_est = syslin('c', A_est, B_est, C_est, D_est);
 K_est = -lqr(H_est , Q_est, R_est)
 disp(spec(A_est - B_est *K_est))
@@ -367,19 +367,19 @@ Kc_est = [0, K_est(1,2), K_est(1,3), 0, K_est(1,5);
 Kint_est = [K_est(1,6), K_est(1,7);
             K_est(2,6), K_est(2,7)];
             
-R_kalman= 10000000000 * diag([1e-5 19.36 8.654e-4 0.1296 1]);
-Q_kalman= 0.000000001 * eye(5,5);
+R_kalman= 100000000 * diag([1e-5 19.36 8.654e-4 0.1296 1]);
+Q_kalman= 0.0001 * eye(5,5);
 
 Q_kalman2 =   10000 * diag([Q11 Q22 Q33 Q44 1]);
 R_kalman2 = 10000 * diag([R11 R22])
 H_kalman = syslin('c', A_kalman, B_kalman, C_kalman, D_kalman);
 K_kalman = -lqr(H_kalman , Q_kalman2, R_kalman2)
-disp(spec(A_kalman - B_kalman *K_kalman))
+//disp(spec(A_kalman - B_kalman *K_kalman))
 valores_proprios_kalman=spec(A_kalman-B_kalman*K_kalman);
 [wn_kalman,z_kalman] = damp(valores_proprios_kalman);
-disp(valores_proprios_kalman, K_kalman)
-disp(wn_kalman)
-disp(z_kalman)
+//disp(valores_proprios_kalman, K_kalman)
+//disp(wn_kalman)
+//disp(z_kalman)
 
 H_kalman = syslin('c', A_kalman-B_kalman*K_kalman , B_kalman, C_kalman, D_kalman);
 [L, x_lqe] = lqe(H_kalman, Q_kalman, R_kalman)
