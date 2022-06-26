@@ -15,10 +15,6 @@ while j<len
   j=j+1;
 end
 
-Influencia = Influencia -1;
-
-if Influencia < 100; Influencia = 100;end
-
 if j<len
 
     vec_dest=[Path(j,1) Path(j,2)];
@@ -48,4 +44,8 @@ if j<len
     vec_anterior=vec_actual;
 end
 
+disp(rumo)
+if isnan(rumo)
+    rumo = 0;
+end
 rumo_final=rumo;

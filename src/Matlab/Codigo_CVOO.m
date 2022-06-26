@@ -318,7 +318,7 @@ global Influencia;
 global Vector_Base;
 
 j=1; passo=2;
-Influencia=100;
+Influencia=100/4;
 vec_anterior=[0 0];
 Vector_Base=[0 0];
 
@@ -328,7 +328,7 @@ Vector_Base=[0 0];
 global Path
 
 passo=1;
-frac = 8;
+frac = 4;
 %AB
 x0N=0*u0/frac:passo:400*u0/frac;
 x0E=zeros(1, max(size(x0N)));
