@@ -318,7 +318,7 @@ global Influencia;
 global Vector_Base;
 
 j=1; passo=2;
-Influencia=100/4;
+Influencia=100/16;
 vec_anterior=[0 0];
 Vector_Base=[0 0];
 
@@ -328,7 +328,7 @@ Vector_Base=[0 0];
 global Path
 
 passo=1;
-frac = 4;
+frac = 16;
 %AB
 x0N=0*u0/frac:passo:400*u0/frac;
 x0E=zeros(1, max(size(x0N)));
@@ -338,7 +338,7 @@ r = 100*u0/frac;
 x = 100*u0/frac;
 y = 400*u0/frac;
 
-theta = linspace(pi, 0, 47200);
+theta = linspace(pi, 0, 100);
 xCirc = r * cos(theta) + x;
 yCirc = r * sin(theta) + y;
 
@@ -348,7 +348,7 @@ x1 = 300*u0/frac;
 y1 = 400*u0/frac;
 n1 = r1*pi; %perimetro calculado de modo a ter um ponto por metro de trajetória
 
-theta1 = linspace(-pi, 0, 47200); %perimetro aproximadamente = 4720
+theta1 = linspace(-pi, 0, 100); %perimetro aproximadamente = 4720
 xCirc1 = r1 * cos(theta1) + x1;
 yCirc1 = r1 * sin(theta1) + y1;
 
@@ -358,7 +358,7 @@ x2 = 305*u0/frac;
 y2 = 400*u0/frac;
 n2 = r2*pi*u0;
 
-theta2 = linspace(0, pi, 44850);
+theta2 = linspace(0, pi, 100);
 xCirc2 = r2 * cos(theta2) + x2;
 yCirc2 = r2 * sin(theta2) + y2;
 
@@ -373,7 +373,7 @@ x3 = 105*u0/frac;
 y3 = 0*u0/frac;
 n3 = r3*pi;
 
-theta3 = linspace(0, -pi, 49550);
+theta3 = linspace(0, -pi, 100);
 xCirc3 = r3 * cos(theta3) + x3;
 yCirc3 = r3 * sin(theta3) + y3;
 
