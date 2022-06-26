@@ -20,7 +20,6 @@ Lda Nda Ydr Ldr Ndr
 */
 
 clear;
-close all;
 
 // Constantes e conversões
 kn = 0.5144444444444444;
@@ -105,25 +104,28 @@ Ndr = 10.894;
 //==============================================================================
 
 // Matriz A
-A = [ybb,yp+sin(tt0),yr-1,g*cos(tt0)/u0;
-    lbb + Ixz/Ix*nbb,lp + Ixz/Ix*np,lr + Ixz/Ix*nr,0; 
-    nbb + Ixz/Iz*lbb,np + Ixz/Iz*lp,nr + Ixz/Iz*lr,0;
-    0,1,tan(tt0),0];
+A = [ybb,yp+sin(tt0),yr-1,g*cos(tt0)/u0, 0;
+    lbb + Ixz/Ix*nbb,lp + Ixz/Ix*np,lr + Ixz/Ix*nr,0, 0; 
+    nbb + Ixz/Iz*lbb,np + Ixz/Iz*lp,nr + Ixz/Iz*lr,0, 0;
+    0,1,tan(tt0),0, 0;
+    0 0 1/(cos(tt0)) 0 0];
 
 // Matriz B
 B = [0, Ydr;
     Lda + Ixz/Ix*Nda, Ldr + Ixz/Ix*Ndr;
     Nda + Ixz/Iz*Lda, Ndr + Ixz/Iz*Ldr;
+    0, 0;
     0, 0];
     
 // Matriz C
-C = [1, 0, 0, 0;
-    0, 1, 0, 0;
-    0, 0, 1, 0;
-    0, 0, 0, 1];
+C = [1, 0, 0, 0, 0;
+    0, 1, 0, 0, 0;
+    0, 0, 1, 0, 0;
+    0, 0, 0, 1, 0;
+    0, 0, 0, 0, 1];
 
 // Matriz D
-D = zeros(4,2);
+D = zeros(5,2);
 
 
 // Valores Próprios
@@ -133,7 +135,7 @@ valores_proprios = spec(A);
 // Dados para analisar qualidades de voo
 T2 = log(2)/valores_proprios(4);
 tau = 1/-valores_proprios(1);
-disp(T2, tau)
+//disp(T2, tau)
 
 //==============================================================================
 //==============================================================================
@@ -147,7 +149,7 @@ disp(T2, tau)
 // Função Tranferência 
 H = syslin('c', A, B, C, D);
 h = ss2tf(H)
-disp(h(3,2))
+//disp(h(3,2))
 
 //Rootlocus
 //clf();
@@ -155,7 +157,7 @@ disp(h(3,2))
 //sgrid('red')
 
 // k retirado do gráfico
-k_sae = [0 0 2.849 0];
+k_sae = [0 0 2.849 0 0];
 
 Aaf = A-B(:,2)*k_sae;
 Caf =[0, 0, 0, 0;
@@ -179,10 +181,11 @@ tauf = 1/-valores_proprios_f(1);
 //Método de Bryson
 
 //Valores escolhidos para Q
-max_bb = 15*0.5*deg; 
-max_p = 0.5;
-max_r = 0.5;
-max_phi = 30*0.5*deg;
+max_bb = 15*0.1*deg; 
+max_p = 0.1;
+max_r = 0.1;
+max_phi = 30*0.1*deg;
+max_psi = 45*0.1*deg
 //Valores escolhidos para R
 max_da = 30*0.5*deg;
 max_dr = 30*0.5*deg;
@@ -192,14 +195,15 @@ Q11 = 1/(max_bb^2);
 Q22 = 1/(max_p^2);
 Q33 = 1/(max_r^2);
 Q44 = 1/(max_phi^2);
+Q55 = 1/(max_psi^2);
 
 //Dados da Matriz R
 R11 = 1/(max_da^2);
 R22 = 1/(max_dr^2);
 
 // Matriz Q e R
-Q = diag([Q11 Q22 Q33 Q44]);
-R = diag([R11 R22]);
+Q = diag([Q11 Q22 Q33 Q55 1]);
+R = 0.1 * diag([R11 R22]);
 
 // Ganho K
 K1=-lqr(H,Q,R);
@@ -207,13 +211,13 @@ K1=-lqr(H,Q,R);
 // Valores Próprios, w_n e fator de amortecimento
 valores_proprios_c=spec(A-B*K1);
 [wn_c,z_c] = damp(valores_proprios_c);
-disp(valores_proprios, valores_proprios_f, valores_proprios_c, K1)
-disp(wn, wn_c)
-disp(z, z_c)
+//disp(valores_proprios, valores_proprios_f, valores_proprios_c, K1)
+//disp(wn, wn_c)
+//disp(z, z_c)
 
 A1 = A-B*K1;
-C1 = [1, 0, 0, 0;
-    0, 0, 0, 1;]
+C1 = [1, 0, 0, 0, 0;
+    0, 0, 0, 1, 0;]
 D1 = zeros(2,2);
 G = -C1*inv(A1)*B;
 //disp(G)
@@ -222,10 +226,10 @@ F = inv(G); // ganho estático para seguimento de referência
 //gráfico
 bb_ref = 0;
 phi_ref = max_phi;
-x0 = zeros(4,1);
+x0 = zeros(5,1);
 
-select_bb_phi = [1, 0, 0, 0;
-                0, 0, 0, 1];
+select_bb_phi = [1, 0, 0, 0, 0;
+                0, 0, 0, 1, 0];
 Ky = [K1(1,1), K1(1,4);
     K1(2,1), K1(2,4)];
 Kc = [0, K1(1,2), K1(1,3), 0;
@@ -242,14 +246,15 @@ Kc = [0, K1(1,2), K1(1,3), 0;
 // plot (t, y1)
 
 //Integrativo
-Q =  diag([Q11 Q22 Q33 Q44 5 5]);
+Q =  diag([Q11 Q22 Q33 Q44 Q55 5 5]);
 
-A_int = [ybb,yp+sin(tt0),yr-1,g*cos(tt0)/u0, 0, 0;
-    lbb + Ixz/Ix*nbb,lp + Ixz/Ix*np,lr + Ixz/Ix*nr,0, 0, 0; 
-    nbb + Ixz/Iz*lbb,np + Ixz/Iz*lp,nr + Ixz/Iz*lr,0, 0, 0;
-    0,1,tan(tt0),0, 0, 0;
-    1, 0, 0, 0, 0, 0;
-    0, 0, 0, 1, 0, 0];
+A_int = [ybb,yp+sin(tt0),yr-1,g*cos(tt0)/u0, 0, 0, 0;
+    lbb + Ixz/Ix*nbb,lp + Ixz/Ix*np,lr + Ixz/Ix*nr,0, 0, 0, 0; 
+    nbb + Ixz/Iz*lbb,np + Ixz/Iz*lp,nr + Ixz/Iz*lr,0, 0, 0, 0;
+    0,1,tan(tt0),0, 0, 0, 0;
+    0 0 1/(cos(tt0)) 0 0, 0, 0;
+    1, 0, 0, 0, 0, 0, 0;
+    0, 0, 0, 1, 0, 0, 0];
 
 // Matriz B com integrativos
 B_int = [0, Ydr;
@@ -257,136 +262,37 @@ B_int = [0, Ydr;
     Nda + Ixz/Iz*Lda, Ndr + Ixz/Iz*Ldr;
     0, 0;
     0, 0;
-    0, 0];
-C_int = [1, 0, 0, 0, 0, 0;
-    0, 1, 0, 0, 0, 0
-    0, 0, 1, 0, 0, 0;
-    0, 0, 0, 1, 0, 0;
-    0, 0, 0, 0, 1, 0;
-    0, 0, 0, 0, 0, 1];
-D_int =  zeros(6,2);
-
-H_int = syslin('c', A_int, B_int, C_int, D_int);
-K_int = -lqr(H_int , Q, R)
-disp(spec(A_int - B_int *K_int))
-valores_proprios_int=spec(A_int-B_int*K_int);
-[wn_int,z_int] = damp(valores_proprios_int);
-disp(valores_proprios, valores_proprios_f, valores_proprios_int, K1)
-disp(wn, wn_int)
-disp(z, z_int)
-
-Ky = [K_int(1,1), K_int(1,4);
-        K_int(2,1), K_int(2,4)];
-
-    
-Kc = [0, K_int(1,2), K_int(1,3), 0;
-      0, K_int(2,2), K_int(2,3), 0];
-
-
-    
-Kint = [K_int(1,5), K_int(1,6);
-            K_int(2,5), K_int(2,6)];
-            
-            
-// Estimador
-// Sensores:
-
-x_0_est = [0; 0; 0; 0; 0; 0; 0]
-A_est = [ybb,yp+sin(tt0),yr-1,g*cos(tt0)/u0, 0, 0, 0;
-    lbb + Ixz/Ix*nbb,lp + Ixz/Ix*np,lr + Ixz/Ix*nr,0, 0, 0, 0; 
-    nbb + Ixz/Iz*lbb,np + Ixz/Iz*lp,nr + Ixz/Iz*lr,0, 0, 0, 0;
-    0,1,tan(tt0),0, 0, 0, 0;
-    0, 0, 1/cos(tt0), 0, 0, 0, 0;
-    1, 0, 0, 0, 0, 0, 0;
-    0, 0, 0, 1, 0, 0, 0];
-
-// Matriz B com integrativos
-B_est = [0, Ydr;
-    Lda + Ixz/Ix*Nda, Ldr + Ixz/Ix*Ndr;
-    Nda + Ixz/Iz*Lda, Ndr + Ixz/Iz*Ldr;
-    0, 0;
-    0, 0;
     0, 0;
     0, 0];
-C_est = [1, 0, 0, 0, 0, 0, 0;
+C_int = [1, 0, 0, 0, 0, 0, 0;
     0, 1, 0, 0, 0, 0, 0;
     0, 0, 1, 0, 0, 0, 0;
     0, 0, 0, 1, 0, 0, 0;
     0, 0, 0, 0, 1, 0, 0;
     0, 0, 0, 0, 0, 1, 0;
     0, 0, 0, 0, 0, 0, 1];
-D_est =  zeros(7,2);
+D_int =  zeros(7,2);
 
-A_kalman = [ybb,yp+sin(tt0),yr-1,g*cos(tt0)/u0, 0;
-    lbb + Ixz/Ix*nbb,lp + Ixz/Ix*np,lr + Ixz/Ix*nr,0, 0; 
-    nbb + Ixz/Iz*lbb,np + Ixz/Iz*lp,nr + Ixz/Iz*lr,0, 0;
-    0,1,tan(tt0),0, 0;
-    0, 0, 1/cos(tt0), 0, 0];
-x_0_kalman = [0; 0; 0; 0; 0]
-// Matriz B com integrativos
-B_kalman = [0, Ydr;
-    Lda + Ixz/Ix*Nda, Ldr + Ixz/Ix*Ndr;
-    Nda + Ixz/Iz*Lda, Ndr + Ixz/Iz*Ldr;
-    0, 0;
-    0, 0]
-    
-C_kalman = [1, 0, 0, 0, 0;
-    0, 1, 0, 0, 0;
-    0, 0, 1, 0, 0;
-    0, 0, 0, 1, 0;
-    0, 0, 0, 0, 1;];
-    
-D_kalman =  zeros(5,2); 
-   
-C_kalman_filter = [0 1 0 0 0;
-            0 0 1 0 0;
-            0 0 0 1 0;
-            0 0 0 0 1];
-D_kalman_filter = zeros(4,2);
+H_int = syslin('c', A_int, B_int, C_int, D_int);
+K_int = -lqr(H_int , Q, R)
+//disp(spec(A_int - B_int *K_int))
+valores_proprios_int=spec(A_int-B_int*K_int);
+[wn_int,z_int] = damp(valores_proprios_int);
+disp(valores_proprios_int)
+disp(wn_int)
+disp(z_int)
 
-Q_est =   10000000 * diag([Q11 Q22 Q33 Q44 600 5 0.5]);
-R_est = 1000000 * diag([R11 R22])
-H_est = syslin('c', A_est, B_est, C_est, D_est);
-K_est = -lqr(H_est , Q_est, R_est)
-disp(spec(A_est - B_est *K_est))
-valores_proprios_est=spec(A_est-B_est*K_est);
-[wn_est,z_est] = damp(valores_proprios_est);
-disp(valores_proprios_est, K_est)
-disp(wn_est)
-disp(z_est)
-
-Ky_est = [K_est(1,1), K_est(1,4);
-        K_est(2,1), K_est(2,4)];
+Ky = [K_int(1,1), K_int(1,4);
+        K_int(2,1), K_int(2,4)];
 
     
-Kc_est = [0, K_est(1,2), K_est(1,3), 0, K_est(1,5);
-      0, K_est(2,2), K_est(2,3), 0, K_est(2,5)];
+Kc = [0, K_int(1,2), K_int(1,3), 0, K_int(1,5);
+      0, K_int(2,2), K_int(2,3),0,  K_int(2,5)];
 
 
     
-Kint_est = [K_est(1,6), K_est(1,7);
-            K_est(2,6), K_est(2,7)];
-            
-R_kalman= 100000000 * diag([1e-5 19.36 8.654e-4 0.1296 1]);
-Q_kalman= 0.0001 * eye(5,5);
-
-Q_kalman2 =   10000 * diag([Q11 Q22 Q33 Q44 1]);
-R_kalman2 = 10000 * diag([R11 R22])
-H_kalman = syslin('c', A_kalman, B_kalman, C_kalman, D_kalman);
-K_kalman = -lqr(H_kalman , Q_kalman2, R_kalman2)
-//disp(spec(A_kalman - B_kalman *K_kalman))
-valores_proprios_kalman=spec(A_kalman-B_kalman*K_kalman);
-[wn_kalman,z_kalman] = damp(valores_proprios_kalman);
-//disp(valores_proprios_kalman, K_kalman)
-//disp(wn_kalman)
-//disp(z_kalman)
-
-H_kalman = syslin('c', A_kalman-B_kalman*K_kalman , B_kalman, C_kalman, D_kalman);
-[L, x_lqe] = lqe(H_kalman, Q_kalman, R_kalman)
-
-
-    
-// xcos("int.zcos")    
+Kint = [K_int(1,6), K_int(1,7);
+            K_int(2,6), K_int(2,7)];
 
 //==============================================================================
 // =============================== RP3 =========================================
@@ -471,128 +377,6 @@ G = 9.81; // m/s^2
 
 //xcos("RF.zcos")
 //xcos("RF_semest.zcos")
-
-
-passo=1;
-
-// AB
-x0N=0:passo:400;
-x0E=zeros(1, max(size(x0N)));
-
-//BC
-r = 100;
-x = 100;
-y = 400;
-
-theta = linspace(%pi, 0, 4720);
-xCirc = r * cos(theta) + x;
-yCirc = r * sin(theta) + y;
-
-//CD-SemiCirc1
-r1 = 100;
-x1 = 300;
-y1 = 400;
-n1 = r1*%pi; //perimetro calculado de modo a ter um ponto por metro de trajetória
-
-theta1 = linspace(-%pi, 0, 4720); //perimetro aproximadamente = 4720
-xCirc1 = r1 * cos(theta1) + x1;
-yCirc1 = r1 * sin(theta1) + y1;
-
-//CD-SemiCirc2
-r2 = 95;
-x2 = 305;
-y2 = 400;
-n2 = r2*%pi;
-
-theta2 = linspace(0, %pi, 4485);
-xCirc2 = r2 * cos(theta2) + x2;
-yCirc2 = r2 * sin(theta2) + y2;
-
-//DE
-x1N=400:-passo:0;
-x1E=zeros(1, max(size(x0N)));
-x1E(1,:) = 210;
-
-//EF
-r3 = 105;
-x3 = 105;
-y3 = 0;
-n3 = r3*%pi;
-
-theta3 = linspace(0, -%pi, 4955);
-xCirc3 = r3 * cos(theta3) + x3;
-yCirc3 = r3 * sin(theta3) + y3;
-
-
-//Percurso completo
-Path = cat(1, [x0E' x0N'], cat(1,[xCirc' yCirc']), cat(1,[xCirc1' yCirc1']), cat(1,[xCirc2' yCirc2']), [x1E' x1N'], cat(1,[xCirc3' yCirc3']));
-clf(25000)
-plot(Path(:,1),Path(:,2),'LineWidth',3)
-
-//Algoritmo
-
-j=1;
-Influencia=50; // raio de erro máximo de posicao
-vec_anterior=[0 0];
-Vector_Base=[0 0];
-
-// input -> posicao gps e rumo verdadeiro
-
-perim_percurso = max(size(Path));
-
-//while j<perim_percurso
-//    if norm(([in(3) in(2)]-[Path(j,1) Path(j,2)]), 2)>= Influencia
-//        break
-//    end
-//    j=j+1;      
-//end
-
-//Influencia = Influencia -1;
-
-//if Influencia < 40 
-//    Influencia = 40;
-//end
-
-
-//Esta parte tem de ser alterada!
-if j<perim_percurso then
-    vec_dest=[Path(j,1) Path(j,2)];
-    vec_actual=[in(3) in(2)];
-
-    dir_dest=vec_dest-vec_actual;
-    dist_target=norm(dir_dest,2);
-    
-    if dist_target < Influencia-1 then
-        break;
-    else
-        //ang = atan(dir_dest(1 2), dir_dest(1 1))
-        //erro_ang = ang - in(1);
-        //vec_anterior=vec_actual;
-    end,
-    
-    //dir_dest=dir_dest/norm(dir_dest,2);
-    
-    //dir_actual=vec_actual-vec_anterior;
-    //dir_actual=dir_actual/norm(dir_actual,2);
-
-    //rota=acos(dir_actual*dir_dest');
-    //vertical=acos(dir_actual*[0; 1]);
-
-    //sentido_vertical=det(cat(1,dir_actual,[0 1]));
-    //sentido_rot=det(cat(1,dir_actual,dir_dest));
-
-    //if sentido_vertical<0
-    //    vertical=-vertical;
-    //end
-    
-    //if sentido_rot>0
-    //    rota=-rota;
-    //end
-
-    //rumo=rota+vertical;
-    //vec_anterior=vec_actual;
-end
-
 
 
 

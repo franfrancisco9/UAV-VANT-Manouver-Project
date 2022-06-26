@@ -266,7 +266,7 @@ a_lower = -4*g;
 a_res = 0.4 * 0.001 * g; 
 a_rms = 3 * 0.001 *g; 
 
-% GiroscÛpio de Raz„o Angular
+% Girosc√≥pio de Raz√£o Angular
 g_upper = 300; 
 g_lower = -300; 
 g_upper_v = 4.3; 
@@ -276,13 +276,13 @@ g_gain_gyro = (g_upper_v-g_lower_v)/(g_upper-g_lower);
 g_gain = g_gain_gyro * (5-0)/(g_upper_v-g_lower_v);
 g_offset = 5 - g_upper * g_gain;
 
-% MagnetÛmetro
-m_upper = 8; 
-m_lower = -8 ;
-m_res = 0.005 ; 
-m_rms = 0.015 ; 
-mag_lisboa_y = 0.004 ;
-mag_lisboa_z = 0.356 ; 
+% Magnet√≥metro
+m_upper = 8 * 10^-4; 
+m_lower = -8 * 10^-4;
+m_res = 0.005 * 10^-4; 
+m_rms = 0.015 * 10^-4; 
+mag_lisboa_y = 0.004 * 10^-4;
+mag_lisboa_z = 0.356 * 10^-4; 
 
 % Sonar
 s_upper = 7.5;
@@ -301,11 +301,11 @@ gps_v_rms = 0.1;
 ad_bits = 12; 
 ad_upper_v = 5; 
 ad_lower_v = 0; 
-ad_quantization = (ad_upper_v-ad_lower_v)/(2*(2^(ad_bits) - 1));
+ad_quantization = (ad_upper_v-ad_lower_v)/(2*(2^(ad_bits) - 1))/atuadores_f;
 ad_rmd = 1.5 * ad_quantization;
 ad_f = atuadores_f; 
 %==============PONTO 5: SIMULACAO=========================         
          
-R_est= 100*diag([10^(-5) (g_rms)^2 (a_rms)^2 (m_rms)^2]);
-Q_est= 10*diag([Q11 Q22 Q33 Q44 10]);
+R_est= 10*diag([10^(-5) (g_rms)^2 (a_rms)^2 (m_rms)^2]);
+Q_est= 0.0000001*eye(5);
 
