@@ -191,7 +191,7 @@ Q55 = 1/(max_psi^2);
 R11 = 1/(max_da^2);
 R22 = 1/(max_dr^2);
 
-Q = 5*diag([Q11 Q22 Q33 Q44 10 5 5]);
+Q = 10* diag([Q11 Q22 Q33 Q44 Q55 5 5]);
 R = 5*diag([R11 R22]);
 
  
@@ -281,8 +281,8 @@ m_upper = 8;
 m_lower = -8 ;
 m_res = 0.005 ; 
 m_rms = 0.015 ; 
-mag_lisboa_y = 0.004 ;
-mag_lisboa_z = 0.356 ; 
+mag_lisboa_y = 0.44 ;
+mag_lisboa_z = 0.44 ; 
 
 % Sonar
 s_upper = 7.5;
@@ -301,11 +301,11 @@ gps_v_rms = 0.1;
 ad_bits = 12; 
 ad_upper_v = 5; 
 ad_lower_v = 0; 
-ad_quantization = (ad_upper_v-ad_lower_v)/(2*(2^(ad_bits) - 1));
-ad_rmd = 1.5 * ad_quantization;
+ad_quantization = (ad_upper_v-ad_lower_v)/(2^(ad_bits) - 1);
+ad_rmd = (1.5 * ad_quantization);
 ad_f = atuadores_f; 
 %==============PONTO 5: SIMULACAO=========================         
          
-R_est= 100*diag([10^(-5) (g_rms)^2 (a_rms)^2 (m_rms)^2]);
-Q_est= 10*diag([Q11 Q22 Q33 Q44 10]);
+R_est= diag([(g_rms)^2 (g_rms)^2 (m_rms)^2 (m_rms)^2]);
+Q_est= 100* eye(5);
 
