@@ -301,11 +301,87 @@ gps_v_rms = 0.1;
 ad_bits = 12; 
 ad_upper_v = 5; 
 ad_lower_v = 0; 
-ad_quantization = (ad_upper_v-ad_lower_v)/(2*(2^(ad_bits) - 1));
-ad_rmd = 1.5 * ad_quantization;
+ad_quantization = (ad_upper_v-ad_lower_v)/(2^(ad_bits) - 1);
+ad_rmd = (1.5 * ad_quantization);
 ad_f = atuadores_f; 
 %==============PONTO 5: SIMULACAO=========================         
          
 R_est= diag([(g_rms)^2 (g_rms)^2 (m_rms)^2 (m_rms)^2]);
 Q_est= 100* eye(5);
 
+%Variáveis de Seguimento
+
+global passo;
+global vec_anterior;
+global j;
+global Influencia;  
+global Vector_Base;
+
+j=1; passo=1;
+Influencia=100;
+vec_anterior=[0 0];
+Vector_Base=[0 0];
+
+
+%Definição do Percurso
+
+global Path
+
+passo=1;
+
+%AB
+x0N=0*u0/2:passo:400*u0/2;
+x0E=zeros(1, max(size(x0N)));
+
+%BC
+r = 100*u0/2;
+x = 100*u0/2;
+y = 400*u0/2;
+
+theta = linspace(pi, 0, 47200);
+xCirc = r * cos(theta) + x;
+yCirc = r * sin(theta) + y;
+
+%CD-SemiCirc1
+r1 = 100*u0/2;
+x1 = 300*u0/2;
+y1 = 400*u0/2;
+n1 = r1*pi; %perimetro calculado de modo a ter um ponto por metro de trajetória
+
+theta1 = linspace(-pi, 0, 47200); %perimetro aproximadamente = 4720
+xCirc1 = r1 * cos(theta1) + x1;
+yCirc1 = r1 * sin(theta1) + y1;
+
+%CD-SemiCirc2
+r2 = 95*u0/2;
+x2 = 305*u0/2;
+y2 = 400*u0/2;
+n2 = r2*pi*u0;
+
+theta2 = linspace(0, pi, 44850);
+xCirc2 = r2 * cos(theta2) + x2;
+yCirc2 = r2 * sin(theta2) + y2;
+
+%DE
+x1N=400*u0/2:-passo:0*u0/2;
+x1E=zeros(1, max(size(x0N)));
+x1E(1,:) = 210*u0/2;
+
+%EF
+r3 = 105*u0/2;
+x3 = 105*u0/2;
+y3 = 0*u0/2;
+n3 = r3*pi;
+
+theta3 = linspace(0, -pi, 49550);
+xCirc3 = r3 * cos(theta3) + x3;
+yCirc3 = r3 * sin(theta3) + y3;
+
+%Percurso completo
+Path = cat(1, [x0E' x0N'], cat(1,[xCirc' yCirc']), cat(1,[xCirc1' yCirc1']), cat(1,[xCirc2' yCirc2']), [x1E' x1N'], cat(1,[xCirc3' yCirc3']));
+plot(Path(:,1), Path(:,2))
+for i=2:length(Path(0,))
+    if Path(i,:) == Path(i-1,:)
+        Path(i,:) = [];
+    end
+end

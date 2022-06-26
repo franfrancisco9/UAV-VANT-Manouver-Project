@@ -1,10 +1,10 @@
-function out=algoritmo1(in)
+function rumo_final=seguimento(in)
 
-global j
-global Path
-global rumo
-global vec_anterior
-global Influencia
+global j;
+global Path;
+global rumo;
+global vec_anterior;
+global Influencia;
 
 len=length(Path);
 
@@ -17,7 +17,7 @@ end
 
 Influencia = Influencia -1;
 
-if Influencia < 100 Influencia = 100;end
+if Influencia < 100; Influencia = 100;end
 
 if j<len
 
@@ -48,4 +48,4 @@ if j<len
     vec_anterior=vec_actual;
 end
 
-out=rumo;
+rumo_final=rumo;
